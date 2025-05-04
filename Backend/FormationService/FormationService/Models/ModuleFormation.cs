@@ -2,5 +2,13 @@
 {
     public class ModuleFormation
     {
+        public required int FormationId { get; set; }
+        public required Formation Formation { get; set; }
+
+        public required int NiveauId { get; set; }
+        public required Niveau Niveau { get; set; }
+
+        public required int ModuleId { get; set; }
+        public required Module Module { get; set; }
     }
 }
