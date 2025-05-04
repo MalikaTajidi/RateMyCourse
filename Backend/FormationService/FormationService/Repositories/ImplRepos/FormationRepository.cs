@@ -1,9 +1,10 @@
 ﻿using FormationService.Models;
+using FormationService.Repositories.IRepos;
 using Microsoft.EntityFrameworkCore;
 
 namespace FormationService.Repositories.ImplRepos
 {
-    public class FormationRepository
+    public class FormationRepository : IFormationRepository
     {
         private readonly FormationDbContext _context;
 
@@ -12,19 +13,32 @@ namespace FormationService.Repositories.ImplRepos
             _context = context;
         }
 
-        public async Task<Formation> AddFormationAsync(Formation formation)
-        {
-            _context.Formations.Add(formation);
-            await _context.SaveChangesAsync();
-            return formation;
-        }
+        public async Task<IEnumerable<Formation>> GetAllAsync()
+            => await _context.Formations.ToListAsync();
 
-        public async Task<Formation> GetFormationByIdAsync(int id)
+        public async Task<Formation?> GetByIdAsync(int id)
+            => await _context.Formations.FindAsync(id);
+
+        public async Task<IEnumerable<Formation>> SearchAsync(string? name, string? school)
         {
             return await _context.Formations
-                .Include(f => f.ModuleFormations)
-                .FirstOrDefaultAsync(f => f.FormationId == id);
+                .Where(f =>
+                    (string.IsNullOrEmpty(name) || f.FormationName.Contains(name)) &&
+                    (string.IsNullOrEmpty(school) || f.SchoolName.Contains(school)))
+                .ToListAsync();
         }
+
+        public async Task CreateAsync(Formation formation)
+            => await _context.Formations.AddAsync(formation);
+
+        public async Task UpdateAsync(Formation formation)
+            => _context.Formations.Update(formation);
+
+        public async Task DeleteAsync(Formation formation)
+            => _context.Formations.Remove(formation);
+
+        public async Task<bool> SaveChangesAsync()
+            => await _context.SaveChangesAsync() > 0;
     }
 }
 
