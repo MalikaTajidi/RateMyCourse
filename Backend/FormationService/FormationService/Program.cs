@@ -22,6 +22,8 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped<FormationService.services.interfaces.IFormationService, FormationService.services.Impl.FormationService>();
 
+builder.Services.AddScoped<FormationService.Repositories.IRepos.IFormationRepository, FormationService.Repositories.ImplRepos.FormationRepository>();
+
 var app = builder.Build();
 
 // Enable Swagger middleware (in all environments)
