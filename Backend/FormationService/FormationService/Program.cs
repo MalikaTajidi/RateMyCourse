@@ -20,6 +20,8 @@ builder.Services.AddDbContext<FormationDbContext>(options =>
 
 builder.Services.AddAutoMapper(typeof(Program));
 
+builder.Services.AddScoped<FormationService.services.interfaces.IFormationService, FormationService.services.Impl.FormationService>();
+
 var app = builder.Build();
 
 // Enable Swagger middleware (in all environments)
