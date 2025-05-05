@@ -18,6 +18,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<FormationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddAutoMapper(typeof(Program));
+
 var app = builder.Build();
 
 // Enable Swagger middleware (in all environments)
