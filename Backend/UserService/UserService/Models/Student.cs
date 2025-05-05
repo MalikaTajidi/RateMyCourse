@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using UserService.Models.UserService.Models;
 
 namespace UserService.Models
 {
@@ -9,6 +10,8 @@ namespace UserService.Models
 
         public int UserId { get; set; }
         public Users User { get; set; }
+        public int NiveauId { get; set; }
+
     }
 
 }

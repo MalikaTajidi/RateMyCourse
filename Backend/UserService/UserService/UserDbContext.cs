@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UserService.Models;
+using UserService.Models.UserService.Models;
 
 namespace UserService
 {

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UserService;
+using UserService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<TokenService>();
 
 // ? Place bien cette ligne AVANT builder.Build()
 builder.Services.AddDbContext<UserDbContext>(options =>
