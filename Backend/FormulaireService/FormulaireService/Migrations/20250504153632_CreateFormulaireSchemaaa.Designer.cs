@@ -2,6 +2,7 @@
 using FormulaireService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FormulaireService.Migrations
 {
     [DbContext(typeof(FormulaireDbContext))]
-    partial class FormulaireDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250504153632_CreateFormulaireSchemaaa")]
+    partial class CreateFormulaireSchemaaa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,6 +45,31 @@ namespace FormulaireService.Migrations
                     b.ToTable("Formulaires");
                 });
 
+            modelBuilder.Entity("FormulaireService.Models.Question", b =>
+                {
+                    b.Property<int>("QuestionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("QuestionId"));
+
+                    b.Property<string>("Intitule")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SectionFormId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SectionFormulaireSecFormId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("QuestionId");
+
+                    b.HasIndex("SectionFormulaireSecFormId");
+
+                    b.ToTable("Questions");
+                });
+
             modelBuilder.Entity("FormulaireService.Models.SectionFormulaire", b =>
                 {
                     b.Property<int>("SecFormId")
@@ -64,26 +92,15 @@ namespace FormulaireService.Migrations
                     b.ToTable("SectionFormulaires");
                 });
 
-            modelBuilder.Entity("Question", b =>
+            modelBuilder.Entity("FormulaireService.Models.Question", b =>
                 {
-                    b.Property<int>("QuestionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                    b.HasOne("FormulaireService.Models.SectionFormulaire", "SectionFormulaire")
+                        .WithMany("Questions")
+                        .HasForeignKey("SectionFormulaireSecFormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("QuestionId"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("SectionFormId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("QuestionId");
-
-                    b.HasIndex("SectionFormId");
-
-                    b.ToTable("Questions");
+                    b.Navigation("SectionFormulaire");
                 });
 
             modelBuilder.Entity("FormulaireService.Models.SectionFormulaire", b =>
@@ -95,17 +112,6 @@ namespace FormulaireService.Migrations
                         .IsRequired();
 
                     b.Navigation("Formulaire");
-                });
-
-            modelBuilder.Entity("Question", b =>
-                {
-                    b.HasOne("FormulaireService.Models.SectionFormulaire", "SectionFormulaire")
-                        .WithMany("Questions")
-                        .HasForeignKey("SectionFormId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SectionFormulaire");
                 });
 
             modelBuilder.Entity("FormulaireService.Models.Formulaire", b =>
