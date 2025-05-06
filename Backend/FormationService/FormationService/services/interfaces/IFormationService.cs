@@ -10,5 +10,6 @@ namespace FormationService.services.interfaces
         Task<FormationResponseDTO> GetFormationByIdAsync(int id);
         Task<bool> DeleteFormationAsync(int id);
         Task<FormationResponseDTO> UpdateFormationAsync(int id, FormationUpdateDTO formationCreateDto);
+        Task<IEnumerable<FormationResponseDTO>> SearchFormationsAsync(string? keyword);
     }
 }

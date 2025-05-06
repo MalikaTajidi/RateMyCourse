@@ -68,5 +68,12 @@ namespace FormationService.Controllers
 
             return Ok(formation);
         }
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<FormationResponseDTO>>> SearchFormations([FromQuery] string? keyword)
+        {
+            var results = await _formationService.SearchFormationsAsync(keyword);
+            return Ok(results);
+        }
+
     }
 }

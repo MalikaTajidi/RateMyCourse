@@ -122,7 +122,12 @@ namespace FormationService.services.Impl
 
                 return formationDto;
             }
+        public async Task<IEnumerable<FormationResponseDTO>> SearchFormationsAsync(string? keyword)
+        {
+            var formations = await _repository.SearchFormationsAsync(keyword);
+            return formations.Select(f => ConvertToResponseDTO(f).Result);
         }
+    }
 
     }
 

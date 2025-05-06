@@ -12,5 +12,8 @@ namespace FormationService.Repositories.IRepos
         Task<Formation> GetFormationWithModulesByIdAsync(int id);
         //Task<Module> GetModuleByNameAsync(string name);
         Task<Formation?> UpdateFormationAsync(int id, Formation formation, List<string> moduleNames, bool updateNiveauNames);
+
+        Task<IEnumerable<Formation>> SearchFormationsAsync(string? keyword);
+
     }
 }

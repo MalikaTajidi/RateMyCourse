@@ -344,6 +344,18 @@ namespace FormationService.Repositories.ImplRepos
             return await _context.Modules
                 .FirstOrDefaultAsync(m => m.Name == name);
         }
+
+        public async Task<IEnumerable<Formation>> SearchFormationsAsync(string? keyword)
+        {
+            return await _context.Formations
+                .Where(f =>
+                    string.IsNullOrEmpty(keyword) ||
+                    f.SchoolName.Contains(keyword) ||
+                    f.FormationName.Contains(keyword) ||
+                    f.Description.Contains(keyword)
+                )
+                .ToListAsync();
+        }
     }
 }
 
