@@ -19,7 +19,7 @@ namespace FormationService.Repositories.ImplRepos
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // Assurez-vous que la collection ModuleFormations est initialisée
+                
                 if (formation.ModuleFormations == null)
                 {
                     formation.ModuleFormations = new List<ModuleFormation>();

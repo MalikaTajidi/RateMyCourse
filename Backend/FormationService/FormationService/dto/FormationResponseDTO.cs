@@ -4,7 +4,7 @@
     {
         public int FormationId { get; set; }
 
-        public string FormationName { get; set; } //Niveau.Name
+        public string FormationName { get; set; } 
         public string SchoolName { get; set; }
         public string Description { get; set; }
         public List<ModuleResponse> Modules { get; set; } = new List<ModuleResponse>();

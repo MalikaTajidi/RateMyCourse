@@ -21,7 +21,7 @@ namespace FormationService.services.Impl
             {
             
             var formation = new Formation
-            {
+            {  
                 SchoolName = formationCreateDto.SchoolName,
                 Description = formationCreateDto.Description ?? string.Empty,
                 FormationName = formationCreateDto.FormationName, 
@@ -96,7 +96,7 @@ namespace FormationService.services.Impl
                     FormationId = formation.FormationId,
                     SchoolName = formation.SchoolName,
                     Description = formation.Description,
-                    FormationName = formation.ModuleFormations.FirstOrDefault()?.Niveau?.Name ?? ""
+                    FormationName = formation.FormationName
                 };
 
                 var modules = formation.ModuleFormations
