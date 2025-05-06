@@ -178,7 +178,7 @@ namespace FormationService.Repositories.ImplRepos
             }
         }
 
-        public async Task<Formation?> UpdateFormationAsync(int id, Formation formation, List<string> moduleNames, bool updateNiveauNames)
+        public async Task<Formation?> UpdateFormationAsync(int id, Formation formation, List<dto.ModuleUpdateDTO> moduleUpdates, bool updateNiveauNames)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -229,92 +229,29 @@ namespace FormationService.Repositories.ImplRepos
                     }
                 }
 
-                // Obtenir les modules existants associés à cette formation
+                // Get all existing modules for this formation
                 var existingModules = existingFormation.ModuleFormations
                     .Select(mf => mf.Module)
                     .DistinctBy(m => m.ModuleId)
                     .ToList();
 
-                // Créer un dictionnaire des modules existants par nom
-                var existingModulesByName = existingModules.ToDictionary(m => m.Name, StringComparer.OrdinalIgnoreCase);
-
-                // Collection pour suivre les ModuleFormations à conserver
-                var moduleFormationsToKeep = new HashSet<int>();
-
-                // Traiter chaque nom de module fourni
-                foreach (var moduleName in moduleNames)
+                // Validate module updates
+                if (moduleUpdates.Count != existingModules.Count)
                 {
-                    // Vérifier si ce module existe déjà pour cette formation
-                    if (existingModulesByName.TryGetValue(moduleName, out var existingModule))
-                    {
-                        // Le module existe déjà avec le bon nom, conserver ses ModuleFormations
-                        var moduleFormations = existingFormation.ModuleFormations
-                            .Where(mf => mf.ModuleId == existingModule.ModuleId)
-                            .ToList();
-
-                        foreach (var mf in moduleFormations)
-                        {
-                            moduleFormationsToKeep.Add(mf.ModuleFormationId);
-                        }
-                    }
-                    else
-                    {
-                        // Vérifier si le module existe dans la base de données
-                        var module = await _context.Modules.FirstOrDefaultAsync(m => m.Name == moduleName);
-
-                        if (module == null)
-                        {
-                            // Créer un nouveau module si nécessaire
-                            module = new Module
-                            {
-                                Name = moduleName,
-                                ModuleFormations = new List<ModuleFormation>()
-                            };
-                            await _context.Modules.AddAsync(module);
-                            await _context.SaveChangesAsync();
-                        }
-
-                        // Créer des ModuleFormations pour ce module avec les niveaux existants
-                        foreach (var niveau in existingNiveaux)
-                        {
-                            var moduleFormation = new ModuleFormation
-                            {
-                                FormationId = existingFormation.FormationId,
-                                Formation = existingFormation,
-                                ModuleId = module.ModuleId,
-                                Module = module,
-                                NiveauId = niveau.NiveauId,
-                                Niveau = niveau
-                            };
-
-                            existingFormation.ModuleFormations.Add(moduleFormation);
-                            module.ModuleFormations.Add(moduleFormation);
-                            niveau.ModuleFormations.Add(moduleFormation);
-
-                            await _context.ModuleFormations.AddAsync(moduleFormation);
-                        }
-                    }
+                    throw new InvalidOperationException("Number of modules must remain the same. Only name updates are allowed.");
                 }
 
-                // Identifier les ModuleFormations à supprimer (celles qui ne sont pas dans moduleFormationsToKeep 
-                // et dont le module n'est pas dans moduleNames)
-                var moduleFormationsToRemove = existingFormation.ModuleFormations
-                    .Where(mf => !moduleFormationsToKeep.Contains(mf.ModuleFormationId) &&
-                                 !moduleNames.Contains(mf.Module.Name, StringComparer.OrdinalIgnoreCase))
-                    .ToList();
-
-                // Supprimer les ModuleFormations qui ne sont plus nécessaires
-                if (moduleFormationsToRemove.Any())
+                // Update module names
+                foreach (var moduleUpdate in moduleUpdates)
                 {
-                    _context.ModuleFormations.RemoveRange(moduleFormationsToRemove);
-
-                    // Mise à jour des collections en mémoire
-                    foreach (var mf in moduleFormationsToRemove)
+                    var moduleToUpdate = existingModules.FirstOrDefault(m => m.ModuleId == moduleUpdate.ModuleId);
+                    if (moduleToUpdate == null)
                     {
-                        existingFormation.ModuleFormations.Remove(mf);
-                        mf.Module.ModuleFormations.Remove(mf);
-                        mf.Niveau.ModuleFormations.Remove(mf);
+                        throw new KeyNotFoundException($"Module with ID {moduleUpdate.ModuleId} not found in this formation");
                     }
+
+                    // Update the module name
+                    moduleToUpdate.Name = moduleUpdate.Name;
                 }
 
                 await _context.SaveChangesAsync();
@@ -328,7 +265,6 @@ namespace FormationService.Repositories.ImplRepos
                 throw;
             }
         }
-
         public async Task<Formation> GetFormationWithModulesByIdAsync(int id)
         {
             return await _context.Formations

@@ -79,18 +79,28 @@ namespace FormationService.services.Impl
                 throw new KeyNotFoundException($"Formation avec l'ID {id} non trouvée");
             }
 
-            // Use AutoMapper to map from DTO to entity
+            // Mapper les propriétés de base
             var formationToUpdate = _mapper.Map<Formation>(formationUpdateDto);
             formationToUpdate.FormationId = id;
 
-            // Obtenir les noms des modules depuis le DTO
-            var moduleNames = formationUpdateDto.Modules?.Select(m => m.Name).ToList() ?? new List<string>();
+            // Préparer les mises à jour des modules
+            var moduleUpdates = formationUpdateDto.Modules?
+                .Select(m => new ModuleUpdateDTO
+                {
+                    ModuleId = m.ModuleId,
+                    Name = m.Name
+                })
+                .ToList() ?? new List<ModuleUpdateDTO>();
 
             // Vérifier si le nom de la formation a changé
             bool formationNameChanged = existingFormation.FormationName != formationUpdateDto.FormationName;
 
             // Mise à jour de la formation avec ses modules
-            var updatedFormation = await _repository.UpdateFormationAsync(id, formationToUpdate, moduleNames, formationNameChanged);
+            var updatedFormation = await _repository.UpdateFormationAsync(
+                id,
+                formationToUpdate,
+                moduleUpdates,
+                formationNameChanged);
 
             return await ConvertToResponseDTO(updatedFormation);
         }

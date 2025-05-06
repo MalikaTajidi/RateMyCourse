@@ -5,6 +5,6 @@
         public string FormationName { get; set; }
         public string SchoolName { get; set; }
         public string Description { get; set; }
-        public List<ModuleDTO> Modules { get; set; } = new List<ModuleDTO>();
+        public List<ModuleUpdateDTO> Modules { get; set; } = new List<ModuleUpdateDTO>();
     }
 }
