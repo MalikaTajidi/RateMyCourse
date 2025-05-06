@@ -5,7 +5,7 @@ namespace FormationService.dto
     public class FormationCreateDTO
     {
         [Required]
-        public string FormationName { get; set; } // Saved in Niveau.Name
+        public string FormationName { get; set; } 
 
         [Required]
         public string SchoolName { get; set; }   

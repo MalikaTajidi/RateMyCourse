@@ -14,67 +14,84 @@ namespace FormationService.Repositories.ImplRepos
             _context = context;
         }
 
-        public async Task<Formation> CreateFormationAsync(Formation formation, string formationName, List<string> moduleNames)
+        public async Task<Formation> CreateFormationAsync(Formation formation, List<string> niveauNames, List<string> moduleNames)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // Create or get niveau based on formation name
-                var niveau = await _context.Niveaux
-                    .FirstOrDefaultAsync(n => n.Name == formationName);
-
-                if (niveau == null)
+                // Assurez-vous que la collection ModuleFormations est initialisée
+                if (formation.ModuleFormations == null)
                 {
-                    niveau = new Niveau
-                    {
-                        Name = formationName,
-                        ModuleFormations = new List<ModuleFormation>()
-                    };
-                    _context.Niveaux.Add(niveau);
-                    await _context.SaveChangesAsync();
+                    formation.ModuleFormations = new List<ModuleFormation>();
                 }
 
-                // Add the formation
-                _context.Formations.Add(formation);
+                // Step 1: Save the Formation with FormationName
+                await _context.Formations.AddAsync(formation);
                 await _context.SaveChangesAsync();
 
-                // Create or get modules
+                // Step 2: Create or get modules
+                var modules = new List<Module>();
                 foreach (var moduleName in moduleNames)
                 {
-                    var module = await _context.Modules
-                        .FirstOrDefaultAsync(m => m.Name == moduleName);
-
+                    var module = await _context.Modules.FirstOrDefaultAsync(m => m.Name == moduleName);
                     if (module == null)
                     {
                         module = new Module
                         {
                             Name = moduleName,
-                            ModuleFormations = new List<ModuleFormation>()
+                            ModuleFormations = new List<ModuleFormation>() // Initialiser la collection ModuleFormations
                         };
-                        _context.Modules.Add(module);
+                        await _context.Modules.AddAsync(module);
                         await _context.SaveChangesAsync();
                     }
-
-                    // Create association between Formation, Niveau, and Module
-                    var moduleFormation = new ModuleFormation
-                    {
-                        FormationId = formation.FormationId,
-                        Formation = formation,
-                        NiveauId = niveau.NiveauId,
-                        Niveau = niveau,
-                        ModuleId = module.ModuleId,
-                        Module = module
-                    };
-
-                    _context.ModuleFormations.Add(moduleFormation);
+                    modules.Add(module);
                 }
 
+                // Step 3: Create the three niveaux from the FormationName
+                var niveaux = new List<Niveau>();
+                foreach (var niveauName in niveauNames)
+                {
+                    var niveau = new Niveau
+                    {
+                        Name = niveauName,
+                        ModuleFormations = new List<ModuleFormation>() // Initialiser la collection ModuleFormations
+                    };
+                    await _context.Niveaux.AddAsync(niveau);
+                    await _context.SaveChangesAsync();
+                    niveaux.Add(niveau);
+                }
+
+                // Step 4: Create the relationships in ModuleFormation table
+                foreach (var module in modules)
+                {
+                    foreach (var niveau in niveaux)
+                    {
+                        var moduleFormation = new ModuleFormation
+                        {
+                            FormationId = formation.FormationId,
+                            Formation = formation,
+                            ModuleId = module.ModuleId,
+                            Module = module,
+                            NiveauId = niveau.NiveauId,
+                            Niveau = niveau
+                        };
+
+                        // Ajout aux collections de navigation
+                        formation.ModuleFormations.Add(moduleFormation);
+                        module.ModuleFormations.Add(moduleFormation);
+                        niveau.ModuleFormations.Add(moduleFormation);
+
+                        await _context.ModuleFormations.AddAsync(moduleFormation);
+                    }
+                }
                 await _context.SaveChangesAsync();
+
                 await transaction.CommitAsync();
 
-                return formation;
+                // Return the formation with relationships loaded
+                return await GetFormationByIdAsync(formation.FormationId);
             }
-            catch
+            catch (Exception)
             {
                 await transaction.RollbackAsync();
                 throw;

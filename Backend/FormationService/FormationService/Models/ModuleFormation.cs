@@ -10,5 +10,23 @@
 
         public required int ModuleId { get; set; }
         public required Module Module { get; set; }
+
+        public ModuleFormation()
+        {
+            
+        }
+
+      
+        public ModuleFormation(Formation formation, Module module, Niveau niveau)
+        {
+            Formation = formation;
+            FormationId = formation.FormationId;
+
+            Module = module;
+            ModuleId = module.ModuleId;
+
+            Niveau = niveau;
+            NiveauId = niveau.NiveauId;
+        }
     }
 }

@@ -19,19 +19,27 @@ namespace FormationService.services.Impl
 
             public async Task<FormationResponseDTO> CreateFormationAsync(FormationCreateDTO formationCreateDto)
             {
+            
             var formation = new Formation
             {
                 SchoolName = formationCreateDto.SchoolName,
                 Description = formationCreateDto.Description ?? string.Empty,
+                FormationName = formationCreateDto.FormationName, 
                 ModuleFormations = new List<ModuleFormation>()
             };
 
-            
+            // Generate three niveau names based on the FormationName
+            var niveauNames = new List<string>
+            {
+                $"{formationCreateDto.FormationName} 1",
+                $"{formationCreateDto.FormationName} 2",
+                $"{formationCreateDto.FormationName} 3"
+            };
+
+            // Get module names from the request
             var moduleNames = formationCreateDto.Modules?.Select(m => m.Name).ToList() ?? new List<string>();
+            var createdFormation = await _repository.CreateFormationAsync(formation, niveauNames, moduleNames);
 
-            var createdFormation = await _repository.CreateFormationAsync(formation, formationCreateDto.FormationName, moduleNames);
-
-            
             return await ConvertToResponseDTO(createdFormation);
         }
 
