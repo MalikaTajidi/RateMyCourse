@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FormulaireService.Models;
+using System.ComponentModel.DataAnnotations;
 
-namespace FormulaireService.Models
+public class Question
 {
-    public class Question
-    {
-        [Key]
-        public int QuestionId { get; set; }
-        public string Content { get; set; }
-    }
+    [Key]
+    public int QuestionId { get; set; }
 
+    [Required]
+    public string Content { get; set; }
+
+    public int SectionFormId { get; set; }  // Clé étrangère vers SectionFormulaire
 }
