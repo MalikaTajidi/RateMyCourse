@@ -9,47 +9,64 @@ namespace FormationService.Controllers
     [ApiController]
     public class FormationController : ControllerBase
     {
-        //private readonly IFormationService _service;
+        private readonly IFormationService _formationService;
 
-        //public FormationController(IFormationService service)
-        //{
-        //    _service = service;
-        //}
+        public FormationController(IFormationService formationService)
+        {
+            _formationService = formationService;
+        }
 
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<FormationReadDTO>>> GetAll()
-        //=> Ok(await _service.GetAllAsync());
+        [HttpPost]
+        public async Task<IActionResult> CreateFormation([FromBody] FormationCreateDTO formationCreateDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<FormationReadDTO>> GetById(int id)
-        //{
-        //    var dto = await _service.GetByIdAsync(id);
-        //    return dto == null ? NotFound() : Ok(dto);
-        //}
+            var formation = await _formationService.CreateFormationAsync(formationCreateDto);
+            return CreatedAtAction(nameof(GetFormationById), new { id = formation.FormationId }, formation);
+        }
 
-        //[HttpGet("search")]
-        //public async Task<ActionResult<IEnumerable<FormationReadDTO>>> Search([FromQuery] string? name, [FromQuery] string? school)
-        //    => Ok(await _service.SearchAsync(name, school));
+        [HttpGet]
+        public async Task<IActionResult> GetAllFormations()
+        {
+            var formations = await _formationService.GetAllFormationsAsync();
+            return Ok(formations);
+        }
 
-        //[HttpPost]
-        //public async Task<ActionResult<FormationReadDTO>> Create(FormationCreateDTO dto)
-        //{
-        //    var created = await _service.CreateAsync(dto);
-        //    return CreatedAtAction(nameof(GetById), new { id = created.FormationId }, created);
-        //}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetFormationById(int id)
+        {
+            var formation = await _formationService.GetFormationByIdAsync(id);
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> Update(int id, FormationUpdateDTO dto)
-        //{
-        //    var success = await _service.UpdateAsync(id, dto);
-        //    return success ? NoContent() : NotFound();
-        //}
+            if (formation == null)
+                return NotFound();
 
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    var success = await _service.DeleteAsync(id);
-        //    return success ? NoContent() : NotFound();
-        //}
+            return Ok(formation);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFormation(int id)
+        {
+            var result = await _formationService.DeleteFormationAsync(id);
+
+            if (!result)
+                return NotFound();
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateFormation(int id, [FromBody] FormationCreateDTO formationCreateDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var formation = await _formationService.UpdateFormationAsync(id, formationCreateDto);
+
+            if (formation == null)
+                return NotFound();
+
+            return Ok(formation);
+        }
     }
 }

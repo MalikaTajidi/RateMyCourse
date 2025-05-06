@@ -7,7 +7,104 @@ using AutoMapper;
 namespace FormationService.services.Impl
 {
     public class FormationService : IFormationService
-    {
-       
+        {
+            private readonly IFormationRepository _repository;
+            private readonly IMapper _mapper;
+
+            public FormationService(IFormationRepository repository, IMapper mapper)
+            {
+                _repository = repository;
+                _mapper = mapper;
+            }
+
+            public async Task<FormationResponseDTO> CreateFormationAsync(FormationCreateDTO formationCreateDto)
+            {
+            var formation = new Formation
+            {
+                SchoolName = formationCreateDto.SchoolName,
+                Description = formationCreateDto.Description ?? string.Empty,
+                ModuleFormations = new List<ModuleFormation>()
+            };
+
+            
+            var moduleNames = formationCreateDto.Modules?.Select(m => m.Name).ToList() ?? new List<string>();
+
+            var createdFormation = await _repository.CreateFormationAsync(formation, formationCreateDto.FormationName, moduleNames);
+
+            
+            return await ConvertToResponseDTO(createdFormation);
+        }
+
+            public async Task<IEnumerable<FormationResponseDTO>> GetAllFormationsAsync()
+            {
+                var formations = await _repository.GetAllFormationsAsync();
+                var formationDtos = new List<FormationResponseDTO>();
+
+                foreach (var formation in formations)
+                {
+                    formationDtos.Add(await ConvertToResponseDTO(formation));
+                }
+
+                return formationDtos;
+            }
+
+            public async Task<FormationResponseDTO> GetFormationByIdAsync(int id)
+            {
+                var formation = await _repository.GetFormationByIdAsync(id);
+                if (formation == null)
+                    return null;
+
+                return await ConvertToResponseDTO(formation);
+            }
+
+            public async Task<bool> DeleteFormationAsync(int id)
+            {
+                return await _repository.DeleteFormationAsync(id);
+            }
+
+            public async Task<FormationResponseDTO> UpdateFormationAsync(int id, FormationCreateDTO formationCreateDto)
+            {
+            var formation = new Formation
+            {
+                SchoolName = formationCreateDto.SchoolName,
+                Description = formationCreateDto.Description ?? string.Empty,
+                ModuleFormations = new List<ModuleFormation>()
+            };
+
+            var updatedFormation = await _repository.UpdateFormationAsync(id, formation);
+            if (updatedFormation == null)
+                return null;
+
+            return await ConvertToResponseDTO(updatedFormation);
+        }
+
+            private async Task<FormationResponseDTO> ConvertToResponseDTO(Formation formation)
+            {
+               
+                formation = await _repository.GetFormationByIdAsync(formation.FormationId);
+
+                var formationDto = new FormationResponseDTO
+                {
+                    FormationId = formation.FormationId,
+                    SchoolName = formation.SchoolName,
+                    Description = formation.Description,
+                    FormationName = formation.ModuleFormations.FirstOrDefault()?.Niveau?.Name ?? ""
+                };
+
+                var modules = formation.ModuleFormations
+                    .Select(mf => new ModuleResponse
+                    {
+                        ModuleId = mf.Module.ModuleId,
+                        Name = mf.Module.Name
+                    })
+                    .DistinctBy(m => m.ModuleId)
+                    .ToList();
+
+                formationDto.Modules = modules;
+
+                return formationDto;
+            }
+        }
+
     }
-}
+
