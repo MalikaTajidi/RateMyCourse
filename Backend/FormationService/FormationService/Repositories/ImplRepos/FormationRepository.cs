@@ -120,21 +120,62 @@ namespace FormationService.Repositories.ImplRepos
 
         public async Task<bool> DeleteFormationAsync(int id)
         {
-            var formation = await _context.Formations
-                .Include(f => f.ModuleFormations)
-                .FirstOrDefaultAsync(f => f.FormationId == id);
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // 1. Charger la formation avec TOUTES ses relations
+                var formation = await _context.Formations
+                    .Include(f => f.ModuleFormations)
+                        .ThenInclude(mf => mf.Module)
+                    .Include(f => f.ModuleFormations)
+                        .ThenInclude(mf => mf.Niveau)
+                    .FirstOrDefaultAsync(f => f.FormationId == id);
 
-            if (formation == null)
-                return false;
+                if (formation == null)
+                    return false;
 
-            // Remove ModuleFormation relationships
-            _context.ModuleFormations.RemoveRange(formation.ModuleFormations);
+                // 2. Collecter tous les éléments à supprimer
+                var moduleFormations = formation.ModuleFormations.ToList();
+                var modules = moduleFormations.Select(mf => mf.Module).Distinct().ToList();
+                var niveaux = moduleFormations.Select(mf => mf.Niveau).Distinct().ToList();
 
-            // Remove Formation
-            _context.Formations.Remove(formation);
+                // 3. Supprimer les relations ModuleFormation
+                _context.ModuleFormations.RemoveRange(moduleFormations);
 
-            await _context.SaveChangesAsync();
-            return true;
+                // 4. Supprimer la formation
+                _context.Formations.Remove(formation);
+
+                // 5. Supprimer les niveaux spécifiques à cette formation
+                foreach (var niveau in niveaux)
+                {
+                    // Vérifier si le niveau appartient exclusivement à cette formation
+                    var isNiveauUsedElsewhere = await _context.ModuleFormations
+                        .AnyAsync(mf => mf.NiveauId == niveau.NiveauId && mf.FormationId != id);
+
+                    if (!isNiveauUsedElsewhere && niveau.Name.StartsWith(formation.FormationName))
+                    {
+                        _context.Niveaux.Remove(niveau);
+                    }
+                }
+
+                // 6. Supprimer les modules orphelins
+                foreach (var module in modules)
+                {
+                        _context.Modules.Remove(module);
+                    
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                // Loguer l'erreur (ex)
+                throw;
+            }
         }
 
         public async Task<Formation?> UpdateFormationAsync(int id, Formation formation, List<string> moduleNames, bool updateNiveauNames)
