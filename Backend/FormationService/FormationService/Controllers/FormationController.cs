@@ -1,4 +1,5 @@
 ﻿using FormationService.dto;
+using FormationService.Repositories.IRepos;
 using FormationService.services.interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,12 @@ namespace FormationService.Controllers
     public class FormationController : ControllerBase
     {
         private readonly IFormationService _formationService;
+        private readonly IFormationRepository _repository;
 
-        public FormationController(IFormationService formationService)
+        public FormationController(IFormationService formationService, IFormationRepository repository)
         {
             _formationService = formationService;
+            _repository = repository;
         }
 
         [HttpPost]
@@ -73,6 +76,20 @@ namespace FormationService.Controllers
         {
             var results = await _formationService.SearchFormationsAsync(keyword);
             return Ok(results);
+        }
+
+        [HttpGet("niveau/{niveauId}/modules")]
+        public async Task<ActionResult<IEnumerable<ModuleByNiveauResponse>>> GetModulesByNiveau(int niveauId)
+        {
+            try
+            {
+                var modules = await _repository.GetModulesByNiveauIdAsync(niveauId);
+                return Ok(modules);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
 
     }

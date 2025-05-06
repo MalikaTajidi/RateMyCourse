@@ -1,4 +1,5 @@
 ﻿using System;
+using FormationService.dto;
 using FormationService.Models;
 using FormationService.Repositories.IRepos;
 using Microsoft.EntityFrameworkCore;
@@ -290,6 +291,19 @@ namespace FormationService.Repositories.ImplRepos
                     f.FormationName.Contains(keyword) ||
                     f.Description.Contains(keyword)
                 )
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ModuleByNiveauResponse>> GetModulesByNiveauIdAsync(int niveauId)
+        {
+            return await _context.ModuleFormations
+                .Where(mf => mf.NiveauId == niveauId)
+                .Select(mf => new ModuleByNiveauResponse
+                {
+                    ModuleId = mf.Module.ModuleId,
+                    ModuleName = mf.Module.Name
+                })
+                .Distinct() // Pour éviter les doublons si un module est associé plusieurs fois
                 .ToListAsync();
         }
     }
