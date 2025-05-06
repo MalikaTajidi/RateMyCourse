@@ -2,6 +2,7 @@
 using FormationService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FormationService.Migrations
 {
     [DbContext(typeof(FormationDbContext))]
-    partial class FormationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250506135302_updatev7")]
+    partial class updatev7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,9 +75,6 @@ namespace FormationService.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("NiveauId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ModuleFormationId")
                         .HasColumnType("integer");
 
                     b.HasKey("FormationId", "ModuleId", "NiveauId");

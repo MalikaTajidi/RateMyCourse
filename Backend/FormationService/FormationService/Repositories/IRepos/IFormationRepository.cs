@@ -8,6 +8,9 @@ namespace FormationService.Repositories.IRepos
         Task<IEnumerable<Formation>> GetAllFormationsAsync();
         Task<Formation?> GetFormationByIdAsync(int id);
         Task<bool> DeleteFormationAsync(int id);
-        Task<Formation?> UpdateFormationAsync(int id, Formation formation);
+        //Task<Formation?> UpdateFormationAsync(int id, Formation formation, List<string> moduleNames);
+        Task<Formation> GetFormationWithModulesByIdAsync(int id);
+        //Task<Module> GetModuleByNameAsync(string name);
+        Task<Formation?> UpdateFormationAsync(int id, Formation formation, List<string> moduleNames, bool updateNiveauNames);
     }
 }

@@ -1,0 +1,10 @@
+﻿namespace FormationService.dto
+{
+    public class FormationUpdateDTO
+    {
+        public string FormationName { get; set; }
+        public string SchoolName { get; set; }
+        public string Description { get; set; }
+        public List<ModuleDTO> Modules { get; set; } = new List<ModuleDTO>();
+    }
+}

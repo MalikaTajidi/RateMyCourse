@@ -70,23 +70,33 @@ namespace FormationService.services.Impl
                 return await _repository.DeleteFormationAsync(id);
             }
 
-            public async Task<FormationResponseDTO> UpdateFormationAsync(int id, FormationCreateDTO formationCreateDto)
+        public async Task<FormationResponseDTO> UpdateFormationAsync(int id, FormationUpdateDTO formationUpdateDto)
+        {
+            // Récupérer la formation existante
+            var existingFormation = await _repository.GetFormationWithModulesByIdAsync(id);
+            if (existingFormation == null)
             {
-            var formation = new Formation
-            {
-                SchoolName = formationCreateDto.SchoolName,
-                Description = formationCreateDto.Description ?? string.Empty,
-                ModuleFormations = new List<ModuleFormation>()
-            };
+                throw new KeyNotFoundException($"Formation avec l'ID {id} non trouvée");
+            }
 
-            var updatedFormation = await _repository.UpdateFormationAsync(id, formation);
-            if (updatedFormation == null)
-                return null;
+            // Use AutoMapper to map from DTO to entity
+            var formationToUpdate = _mapper.Map<Formation>(formationUpdateDto);
+            formationToUpdate.FormationId = id;
+
+            // Obtenir les noms des modules depuis le DTO
+            var moduleNames = formationUpdateDto.Modules?.Select(m => m.Name).ToList() ?? new List<string>();
+
+            // Vérifier si le nom de la formation a changé
+            bool formationNameChanged = existingFormation.FormationName != formationUpdateDto.FormationName;
+
+            // Mise à jour de la formation avec ses modules
+            var updatedFormation = await _repository.UpdateFormationAsync(id, formationToUpdate, moduleNames, formationNameChanged);
 
             return await ConvertToResponseDTO(updatedFormation);
         }
 
-            private async Task<FormationResponseDTO> ConvertToResponseDTO(Formation formation)
+
+        private async Task<FormationResponseDTO> ConvertToResponseDTO(Formation formation)
             {
                
                 formation = await _repository.GetFormationByIdAsync(formation.FormationId);

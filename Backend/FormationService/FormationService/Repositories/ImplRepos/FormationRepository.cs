@@ -137,19 +137,171 @@ namespace FormationService.Repositories.ImplRepos
             return true;
         }
 
-        public async Task<Formation?> UpdateFormationAsync(int id, Formation formation)
+        public async Task<Formation?> UpdateFormationAsync(int id, Formation formation, List<string> moduleNames, bool updateNiveauNames)
         {
-            var existingFormation = await _context.Formations
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var existingFormation = await _context.Formations
+                    .Include(f => f.ModuleFormations)
+                        .ThenInclude(mf => mf.Module)
+                    .Include(f => f.ModuleFormations)
+                        .ThenInclude(mf => mf.Niveau)
+                    .FirstOrDefaultAsync(f => f.FormationId == id);
+
+                if (existingFormation == null)
+                    return null;
+
+                // Mise à jour des propriétés de base de la formation
+                existingFormation.FormationName = formation.FormationName;
+                existingFormation.SchoolName = formation.SchoolName;
+                existingFormation.Description = formation.Description;
+
+                // Obtenir les niveaux existants pour cette formation
+                var existingNiveaux = existingFormation.ModuleFormations
+                    .Select(mf => mf.Niveau)
+                    .DistinctBy(n => n.NiveauId)
+                    .ToList();
+
+                // Si le nom de formation a changé, mettre à jour les noms des niveaux
+                if (updateNiveauNames)
+                {
+                    // Trouver les noms de niveau avec le format "Ancien Nom Formation X"
+                    var oldFormationName = existingFormation.FormationName;
+
+                    foreach (var niveau in existingNiveaux)
+                    {
+                        // Vérifier si le nom du niveau commence par l'ancien nom de formation
+                        // OU si le niveau suit le format de nom standard "NomFormation X"
+                        if (niveau.Name.StartsWith(oldFormationName) ||
+                            (niveau.Name.Contains("1") || niveau.Name.Contains("2") || niveau.Name.Contains("3")))
+                        {
+                            // Extraire le suffixe (comme " 1", " 2", " 3")
+                            string suffix = "";
+                            if (niveau.Name.EndsWith("1")) suffix = " 1";
+                            else if (niveau.Name.EndsWith("2")) suffix = " 2";
+                            else if (niveau.Name.EndsWith("3")) suffix = " 3";
+
+                            // Mettre à jour le nom de niveau avec le nouveau nom de formation
+                            niveau.Name = formation.FormationName + suffix;
+                        }
+                    }
+                }
+
+                // Obtenir les modules existants associés à cette formation
+                var existingModules = existingFormation.ModuleFormations
+                    .Select(mf => mf.Module)
+                    .DistinctBy(m => m.ModuleId)
+                    .ToList();
+
+                // Créer un dictionnaire des modules existants par nom
+                var existingModulesByName = existingModules.ToDictionary(m => m.Name, StringComparer.OrdinalIgnoreCase);
+
+                // Collection pour suivre les ModuleFormations à conserver
+                var moduleFormationsToKeep = new HashSet<int>();
+
+                // Traiter chaque nom de module fourni
+                foreach (var moduleName in moduleNames)
+                {
+                    // Vérifier si ce module existe déjà pour cette formation
+                    if (existingModulesByName.TryGetValue(moduleName, out var existingModule))
+                    {
+                        // Le module existe déjà avec le bon nom, conserver ses ModuleFormations
+                        var moduleFormations = existingFormation.ModuleFormations
+                            .Where(mf => mf.ModuleId == existingModule.ModuleId)
+                            .ToList();
+
+                        foreach (var mf in moduleFormations)
+                        {
+                            moduleFormationsToKeep.Add(mf.ModuleFormationId);
+                        }
+                    }
+                    else
+                    {
+                        // Vérifier si le module existe dans la base de données
+                        var module = await _context.Modules.FirstOrDefaultAsync(m => m.Name == moduleName);
+
+                        if (module == null)
+                        {
+                            // Créer un nouveau module si nécessaire
+                            module = new Module
+                            {
+                                Name = moduleName,
+                                ModuleFormations = new List<ModuleFormation>()
+                            };
+                            await _context.Modules.AddAsync(module);
+                            await _context.SaveChangesAsync();
+                        }
+
+                        // Créer des ModuleFormations pour ce module avec les niveaux existants
+                        foreach (var niveau in existingNiveaux)
+                        {
+                            var moduleFormation = new ModuleFormation
+                            {
+                                FormationId = existingFormation.FormationId,
+                                Formation = existingFormation,
+                                ModuleId = module.ModuleId,
+                                Module = module,
+                                NiveauId = niveau.NiveauId,
+                                Niveau = niveau
+                            };
+
+                            existingFormation.ModuleFormations.Add(moduleFormation);
+                            module.ModuleFormations.Add(moduleFormation);
+                            niveau.ModuleFormations.Add(moduleFormation);
+
+                            await _context.ModuleFormations.AddAsync(moduleFormation);
+                        }
+                    }
+                }
+
+                // Identifier les ModuleFormations à supprimer (celles qui ne sont pas dans moduleFormationsToKeep 
+                // et dont le module n'est pas dans moduleNames)
+                var moduleFormationsToRemove = existingFormation.ModuleFormations
+                    .Where(mf => !moduleFormationsToKeep.Contains(mf.ModuleFormationId) &&
+                                 !moduleNames.Contains(mf.Module.Name, StringComparer.OrdinalIgnoreCase))
+                    .ToList();
+
+                // Supprimer les ModuleFormations qui ne sont plus nécessaires
+                if (moduleFormationsToRemove.Any())
+                {
+                    _context.ModuleFormations.RemoveRange(moduleFormationsToRemove);
+
+                    // Mise à jour des collections en mémoire
+                    foreach (var mf in moduleFormationsToRemove)
+                    {
+                        existingFormation.ModuleFormations.Remove(mf);
+                        mf.Module.ModuleFormations.Remove(mf);
+                        mf.Niveau.ModuleFormations.Remove(mf);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return await GetFormationByIdAsync(id);
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+        public async Task<Formation> GetFormationWithModulesByIdAsync(int id)
+        {
+            return await _context.Formations
+                .Include(f => f.ModuleFormations)
+                    .ThenInclude(mf => mf.Module)
+                .Include(f => f.ModuleFormations)
+                    .ThenInclude(mf => mf.Niveau)
                 .FirstOrDefaultAsync(f => f.FormationId == id);
+        }
 
-            if (existingFormation == null)
-                return null;
-
-            existingFormation.SchoolName = formation.SchoolName;
-            existingFormation.Description = formation.Description;
-
-            await _context.SaveChangesAsync();
-            return existingFormation;
+        public async Task<Module> GetModuleByNameAsync(string name)
+        {
+            return await _context.Modules
+                .FirstOrDefaultAsync(m => m.Name == name);
         }
     }
 }

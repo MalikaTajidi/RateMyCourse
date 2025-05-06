@@ -56,12 +56,12 @@ namespace FormationService.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateFormation(int id, [FromBody] FormationCreateDTO formationCreateDto)
+        public async Task<IActionResult> UpdateFormation(int id, [FromBody] FormationUpdateDTO formationUpdateDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var formation = await _formationService.UpdateFormationAsync(id, formationCreateDto);
+            var formation = await _formationService.UpdateFormationAsync(id, formationUpdateDto);
 
             if (formation == null)
                 return NotFound();
