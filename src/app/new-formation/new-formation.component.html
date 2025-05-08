@@ -1,0 +1,72 @@
+<div class="container">
+
+  <div class="title-section">
+    <h2>{{ editMode ? 'Modifier une Formation' : 'Ajouter une Formation' }}</h2>
+  </div>
+
+  <form [formGroup]="formationFormGroup">
+    <div class="row mb-4">
+      <div class="col-md-6 mb-3">
+        <label for="nomFormation" class="form-label required-field">Nom de la formation</label>
+        <input type="text" class="form-control" id="nomFormation" formControlName="nom" placeholder="Entrez le nom de la formation">
+        <div class="text-danger mt-1" *ngIf="formationFormGroup.get('nom')?.invalid && formationFormGroup.get('nom')?.touched">
+          <small>Le nom de la formation est requis</small>
+        </div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="ecole" class="form-label required-field">École</label>
+        <input type="text" class="form-control" id="ecole" formControlName="ecole" placeholder="Nom de l'école">
+        <div class="text-danger mt-1" *ngIf="formationFormGroup.get('ecole')?.invalid && formationFormGroup.get('ecole')?.touched">
+          <small>Le nom de l'école est requis</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" id="description" formControlName="description" rows="4" placeholder="Description de la formation..."></textarea>
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label">Modules</label>
+
+      <div formArrayName="listeModule">
+        <div class="module-card" *ngFor="let moduleItem of modules.controls; let i = index" [formGroupName]="i">
+          <div class="row">
+            <div class="col-md-10">
+              <div class="mb-2">
+                <label class="form-label">Nom du module</label>
+                <input type="text" class="form-control" formControlName="nom" placeholder="Nom du module">
+              </div>
+            </div>
+
+
+            <div class="col-md-2">
+              <div class="module-actions">
+                <button type="button" class="btn btn-outline-danger" (click)="supprimerModule(i)">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="add-module-btn" (click)="ajouterModule()">
+        <i class="fas fa-plus-circle me-2"></i> Ajouter un module
+      </div>
+    </div>
+
+    <div class="form-buttons">
+      <button routerLink="/formation" type="button" class="btn btn-outline-secondary btn-action">
+        <i class="fas fa-arrow-left me-2"></i> Retour
+      </button>
+      <!-- disabled , il faut desactiver si les validator ne sont pas valide   -->
+      <button (click)="editMode ?  onUpdateForm() : onSaveFormation()" [disabled]="formationFormGroup.invalid" class="btn btn-primary btn-action">
+        <i class="fas fa-save me-2"></i> Enregistrer
+      </button>
+    </div>
+  </form>
+</div>

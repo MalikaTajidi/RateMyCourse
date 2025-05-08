@@ -1,0 +1,117 @@
+body {
+  background-color: #f0f2f5;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+.formations-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px; /* Encore réduit de 15px à 12px */
+}
+
+.formation-card {
+  background-color: #ffffff;
+  border-radius: 12px; /* Réduit de 15px à 12px */
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); /* Shadow légèrement réduite */
+  padding: 15px; /* Réduit de 18px à 15px */
+  text-align: center;
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.formation-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Hauteur réduite pour le titre */
+.formation-card h2 {
+  color: #3C91E6;
+  margin-top: 5px; /* Ajout d'une marge supérieure réduite */
+  margin-bottom: 8px; /* Réduit de 10px à 8px */
+  font-size: 18px; /* Réduit de 20px à 18px */
+  height: 40px; /* Réduit de 48px à 40px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hauteur réduite pour le nom de l'école */
+.formation-card .ecole {
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 8px; /* Réduit de 10px à 8px */
+  font-size: 15px; /* Réduit de 16px à 15px */
+  height: 20px; /* Réduit de 24px à 20px */
+}
+
+.formation-card .description {
+  font-size: 13px; /* Réduit de 14px à 13px */
+  color: #666;
+  margin-bottom: 12px; /* Réduit de 15px à 12px */
+}
+
+/* Style de titre fixe et réduit pour la section modules */
+.formation-card h3 {
+  font-size: 15px; /* Réduit de 16px à 15px */
+  margin-top: 5px; /* Réduit de 8px à 5px */
+  margin-bottom: 5px; /* Réduit de 8px à 5px */
+  height: 20px; /* Réduit de 24px à 20px */
+}
+
+.module-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 0; /* Ajout pour réduire l'espace */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.module-list li {
+  background-color: #CFE8FF;
+  margin-bottom: 5px; /* Réduit de 6px à 5px */
+  padding: 5px 8px; /* Réduit de 6px 10px à 5px 8px */
+  border-radius: 6px;
+  font-size: 13px; /* Réduit de 14px à 13px */
+  color: #333;
+}
+
+/* Conteneur de boutons avec position fixe en bas */
+.formation-card .d-flex.justify-content-center {
+  margin-top: auto;
+  /* Réduit de 10px à 8px */
+}
+
+.btn-action {
+  width: 85px; /* Réduit de 90px à 85px */
+  font-size: 13px; /* Réduit de 14px à 13px */
+  padding: 4px 8px; /* Ajout pour réduire la taille des boutons */
+}
+
+.input-group {
+  border-radius: 5px;
+  overflow: hidden;
+  width: 200px;
+}
+
+.form-control {
+  border: 1px solid #ced4da;
+  border-radius: 5px 0 0 5px;
+}
+
+.btn {
+  border-radius: 0 5px 5px 0;
+}
+
+.title {
+  font-family: 'Arial', sans-serif;
+  font-size: 36px;
+  font-weight: bold;
+  color: #333;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  margin: 20px 0;
+}

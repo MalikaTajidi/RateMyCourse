@@ -1,0 +1,45 @@
+<div class="formulaires-container">
+  <div class="header">
+    <h2>Liste des Formulaires</h2>
+    <button routerLink="/newQuestion" class="add-btn">
+      <i class="fas fa-plus"></i> Nouveau Formulaire
+    </button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="formulaires-table">
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>Nom</th>
+        <th>Type</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let formulaire of formulaires; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ formulaire.name }}</td>
+        <td>{{ formulaire.type }}</td>
+        <td class="actions">
+          <button routerLink="/detailFormulaire" [queryParams]="{ id: formulaire.id }"  class="action-btn view" (click)="viewFormulaire(formulaire)">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button  routerLink="/newQuestion" [queryParams]="{ id: formulaire.id }" class="action-btn edit">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="action-btn delete" (click)="handleDeleteFormulaire(formulaire)">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <button class="page-btn" (click)="previousPage()" [disabled]="currentPage === 0">Précédent</button>
+    <span>Page {{ currentPage + 1 }} sur {{ numberPage }}</span>
+    <button class="page-btn" (click)="nextPage()" [disabled]="currentPage >= numberPage - 1">Suivant</button>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<div class="formulaire-detail-container">
+  <div class="header">
+    <h2>Détails du Formulaire: {{ formulaire?.name }}</h2>
+    <button routerLink="/question" class="back-btn">
+      <i class="fas fa-arrow-left"></i> Retour à la liste
+    </button>
+  </div>
+
+  <div *ngIf="formulaire" class="formulaire-detail">
+    <div class="info">
+      <h3>Informations Générales</h3>
+      <p><strong>Nom :</strong> {{ formulaire.name }}</p>
+      <p><strong>Type :</strong> {{ formulaire.type }}</p>
+    </div>
+
+    <div class="sections">
+      <h3>Sections</h3>
+      <div *ngFor="let section of formulaire.lSectionFormulaire" class="section">
+        <h4>{{ section.Description }}</h4>
+        <ul class="questions">
+          <li *ngFor="let question of section.lQuestionnaire">
+            <strong>Question {{ question.id }}:</strong> {{ question.content }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

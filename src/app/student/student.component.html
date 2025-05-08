@@ -1,0 +1,116 @@
+<div class="overlay" *ngIf="selectedStudent">
+  <div class="detail-popup">
+    <div class="profile-header">
+      <img src="https://via.placeholder.com/150" alt="Photo de Profil" class="profile-image">
+      <h1 class="profile-name">{{ selectedStudent.nom }} {{ selectedStudent.prenom }}</h1>
+      <p class="profile-role">{{ selectedStudent.role }}</p>
+    </div>
+
+    <div class="profile-details">
+      <div class="detail-item">
+        <i style="margin-right: 20px" class="fas fa-id-card"></i>
+        <span class="detail-label">ID:</span>
+        <span class="detail-value">{{ selectedStudent.id }}</span>
+      </div>
+      <div class="detail-item">
+        <i style="margin-right: 20px" class="fas fa-envelope"></i>
+        <span class="detail-label">Email:</span>
+        <span class="detail-value">{{ selectedStudent.email }}</span>
+      </div>
+      <div class="detail-item">
+        <i style="margin-right: 20px" class="fas fa-lock"></i>
+        <span class="detail-label">Mot de passe:</span>
+        <span class="detail-value">{{ selectedStudent.password }}</span>
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <button class="action-button edit-button">
+        <i class="fas fa-edit"></i> Modifier
+      </button>
+
+      <button (click)="selectedStudent = null" class="action-button back-button" >
+        <i class="fas fa-arrow-left"></i> Retour
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="profil-container">
+  <div class="header">
+    <h1>Liste des Étudiants</h1>
+    <form [formGroup]="searchFormGroup" (ngSubmit)="searchStudents()">
+      <div class="search-container">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Rechercher un étudiant..."
+          formControlName="keyword"
+        />
+        <button type="submit" class="search-btn">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </form>
+
+    <button routerLink="/newStudent" class="add-btn">
+      <i class="fas fa-plus"></i> Nouveau Étudiant
+    </button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="profil-table">
+      <thead>
+      <tr>
+        <th>Photo</th>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Email</th>
+        <th>Rôle</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let student of students" class="profile-row">
+        <td>
+          <div class="avatar" style="background-image: url('https://via.placeholder.com/150')"></div>
+        </td>
+        <td>{{ student.id }}</td>
+        <td>{{ student.nom }}</td>
+        <td>{{ student.prenom }}</td>
+        <td>{{ student.email }}</td>
+        <td><span class="role-badge admin" >{{ student.role }}</span></td>
+        <td class="actions-cell">
+          <button (click)="viewStudent(student)" class="action-btn view" title="Voir le profil">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button [routerLink]="['/newStudent']" [queryParams]="{ id: student.id }" class="action-btn edit" title="Modifier le profil">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button (click)="deleteStudent(student)" class="action-btn delete" title="Supprimer le profil">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button class="page-btn" (click)="previousPage()" [disabled]="currentPage === 0">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <div class="page-info">
+        Page {{ currentPage + 1 }} sur {{ numberPage }}
+      </div>
+
+      <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === numberPage - 1">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>

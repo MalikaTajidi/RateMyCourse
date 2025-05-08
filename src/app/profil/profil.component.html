@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liste des enseignants</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+<div class="overlay" *ngIf="selectedProfil">
+  <div class="detail-popup">
+    <div class="profile-header">
+      <img src="https://via.placeholder.com/150" alt="Photo de Profil" class="profile-image">
+      <h1 class="profile-name">{{selectedProfil.nom}} {{selectedProfil.prenom}}</h1>
+      <p class="profile-role">{{selectedProfil.role}}</p>
+    </div>
+
+    <div class="profile-details">
+      <div class="detail-item">
+        <i  style="margin-right: 20px" class="fas fa-id-card"></i>
+        <span class="detail-label">  ID:</span>
+        <span class="detail-value">{{selectedProfil.id}}</span>
+      </div>
+      <div class="detail-item">
+        <i  style="margin-right: 20px" class="fas fa-envelope"></i>
+        <span class="detail-label">Email:</span>
+        <span class="detail-value">{{selectedProfil.email}}</span>
+      </div>
+      <div class="detail-item">
+        <i style="margin-right: 20px" class="fas fa-lock"></i>
+        <span class="detail-label">password :</span>
+        <span class="detail-value">{{selectedProfil.password}}</span>
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <button routerLink="/newProfil"  [queryParams]="{ id: selectedProfil.id }" class="action-button edit-button">
+        <i   class="fas fa-edit"></i> Modifier
+      </button>
+
+      <button class="action-button back-button" (click)="selectedProfil = null">
+        <i class="fas fa-arrow-left"></i> Retour
+      </button>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="profil-container">
+  <div class="header">
+    <h1>Liste des enseignants</h1>
+   <form [formGroup] = "serchFormGroup"  (ngSubmit)="handlsearchProfil()" >
+
+
+
+     <div class="search-container">
+       <input
+         type="text"
+         id="searchInput"
+         placeholder="Rechercher un profil..."
+         formControlName="keyword"
+       />
+       <button (click)="handlsearchProfil()" class="search-btn">
+         <i class="fas fa-search"></i>
+       </button>
+     </div>
+
+
+   </form>
+
+
+
+    <button   routerLink="/newProfil" class="add-btn">
+      <i class="fas fa-plus"></i> Nouveau Profil
+    </button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="profil-table">
+      <thead>
+      <tr>
+        <th>Photo</th>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Email</th>
+        <th>Rôle</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <!-- Exemple de ligne -->
+      <tr *ngFor="let P of Profils" class="profile-row">
+        <td class="photo-cell">
+          <div class="avatar" style="background-image: url('https://via.placeholder.com/150')"></div>
+        </td>
+        <td>{{P.id}}</td>
+        <td>{{P.nom}}</td>
+        <td>{{P.prenom}}</td>
+        <td>{{P.email}}</td>
+        <td>
+            <span class="role-badge admin">
+              {{P.role}}
+            </span>
+        </td>
+        <td class="actions-cell">
+          <button (click)="selectedProfil = P" class="action-btn view" title="Voir le profil">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button  [routerLink]="['/newProfil']"  [queryParams]="{ id: P.id }" class="action-btn edit" title="Modifier le profil">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button (click)="handleDeleteProfil(P)" class="action-btn delete" title="Supprimer le profil">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- État vide (à afficher quand il n'y a pas de résultats) -->
+    <div class="empty-state" style="display: none;">
+      <div class="empty-icon">
+        <i class="fas fa-users-slash"></i>
+      </div>
+      <h3>Aucun profil trouvé</h3>
+      <p>Aucun profil ne correspond à votre recherche ou aucun profil n'est disponible.</p>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button class="page-btn" (click)="previousPage()" [disabled]="currentPage === 0">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <div class="page-info">
+        Page {{ currentPage + 1 }} sur {{ this.numberPage }}
+      </div>
+
+      <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === this.numberPage - 1">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,87 @@
+
+<div>
+
+
+
+  <button  (click)="toggleSidebar()" *ngIf="isSidebarHidden==false"   class="toggle-sidebar" style="background-color: #3C91E6">
+    <i class='bx bx-menu'></i>
+  </button>
+
+
+
+
+  <section class="sidebar"  [ngClass]="{'hide': isSidebarHidden}">
+
+    <h1 class="brand" style="position: relative; z-index: 1000; ">
+      <i class="bx bxs-smile"></i>
+      <span class="text">RMC</span>
+    </h1>
+
+    <ul class="side-menu top">
+
+
+
+
+      <li *ngIf="isSidebarHidden" (click)="toggleSidebar()" >
+        <a >
+          <i class='bx bx-x' style="font-size: 40px;"></i>
+          <span class="text"></span>
+        </a>
+      </li>
+
+
+      <li [ngClass]="{'active': activeRoute === '/dashboard'}">
+        <a routerLink="/dashboard" (click)="setActive('/dashboard')">
+          <i class="bx bxs-dashboard"></i>
+          <span class="text">Dashboard</span>
+        </a>
+      </li>
+
+      <li [ngClass]="{'active': activeRoute === '/formation'}">
+        <a routerLink="/formation" (click)="setActive('/formation')">
+          <i class="bx bxs-graduation"></i>
+          <span class="text">Formation</span>
+        </a>
+      </li>
+
+
+
+
+
+      <li [ngClass]="{'active': activeRoute === '/profile'}">
+        <a routerLink="/profil" (click)="setActive('/profile')">
+          <i class="bx bxs-user"></i>
+          <span class="text">teacher</span>
+        </a>
+      </li>
+
+      <li [ngClass]="{'active': activeRoute === '/student'}">
+        <a routerLink="/student" (click)="setActive('/student')">
+          <i class='bx bx-cog' ></i>
+          <span class="text">student </span>
+        </a>
+      </li>
+
+      <li [ngClass]="{'active': activeRoute === '/questionnaire'}">
+        <a routerLink="/question" (click)="setActive('/questionnaire')">
+          <i class='bx bxs-file'></i>
+          <span class="text">form </span>
+        </a>
+      </li>
+
+      <li  [ngClass]="{'active': activeRoute === '/logout'}">
+        <a   >
+          <i class='bx bx-log-out-circle'></i>
+          <span class="text">Logout</span>
+        </a>
+      </li>
+
+    </ul>
+  </section>
+
+
+
+
+</div>
+
+

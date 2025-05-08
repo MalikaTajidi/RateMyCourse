@@ -1,0 +1,75 @@
+<div class="container" >
+
+  <div class="title-section">
+    <h1>Ajouter une Formation</h1>
+  </div>
+
+  <form  >
+    <div class="row mb-4">
+      <div class="col-md-6 mb-3">
+        <label for="nomFormation" class="form-label required-field">Nom de la formation</label>
+        <input type="text" class="form-control" id="nomFormation" formControlName="nom" placeholder="Entrez le nom de la formation">
+        <div class="text-danger mt-1">
+          <small>Le nom de la formation est requis</small>
+        </div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="ecole" class="form-label required-field">École</label>
+        <input type="text" class="form-control" id="ecole" formControlName="ecole" placeholder="Nom de l'école">
+        <div class="text-danger mt-1">
+          <small>Le nom de l'école est requis</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" id="description" formControlName="description" rows="4" placeholder="Description de la formation..."></textarea>
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label">Modules</label>
+
+      <div  >
+        <div class="module-card">
+          <div class="row">
+            <div class="col-md-10">
+              <div class="mb-2">
+                <label  class="form-label">Nom du module</label>
+                <input type="text" class="form-control" formControlName="nom" placeholder="Nom du module">
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="module-actions">
+                <button type="button" class="btn btn-outline-danger" >
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="add-module-btn" >
+        <i class="fas fa-plus-circle me-2"></i> Ajouter un module
+      </div>
+    </div>
+
+    <div class="form-buttons">
+      <button type="button" class="btn btn-outline-secondary btn-action" routerLink="/formations">
+        <i class="fas fa-arrow-left me-2"></i> Retour
+      </button>
+      <button type="submit" class="btn btn-primary btn-action">
+        <i class="fas fa-save me-2"></i> Enregistrer
+      </button>
+    </div>
+  </form>
+
+
+
+
+
+
+
+</div>
