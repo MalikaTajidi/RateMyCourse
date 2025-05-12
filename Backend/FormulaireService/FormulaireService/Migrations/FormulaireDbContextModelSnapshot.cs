@@ -42,23 +42,6 @@ namespace FormulaireService.Migrations
                     b.ToTable("Formulaires");
                 });
 
-            modelBuilder.Entity("FormulaireService.Models.Question", b =>
-                {
-                    b.Property<int>("QuestionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("QuestionId"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("QuestionId");
-
-                    b.ToTable("Questions");
-                });
-
             modelBuilder.Entity("FormulaireService.Models.SectionFormulaire", b =>
                 {
                     b.Property<int>("SecFormId")
@@ -74,35 +57,65 @@ namespace FormulaireService.Migrations
                     b.Property<int>("FormulaireId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("integer");
-
                     b.HasKey("SecFormId");
 
                     b.HasIndex("FormulaireId");
 
-                    b.HasIndex("QuestionId");
-
                     b.ToTable("SectionFormulaires");
+                });
+
+            modelBuilder.Entity("Question", b =>
+                {
+                    b.Property<int>("QuestionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("QuestionId"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SectionFormId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("QuestionId");
+
+                    b.HasIndex("SectionFormId");
+
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("FormulaireService.Models.SectionFormulaire", b =>
                 {
                     b.HasOne("FormulaireService.Models.Formulaire", "Formulaire")
-                        .WithMany()
+                        .WithMany("Sections")
                         .HasForeignKey("FormulaireId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FormulaireService.Models.Question", "Question")
-                        .WithMany()
-                        .HasForeignKey("QuestionId")
+                    b.Navigation("Formulaire");
+                });
+
+            modelBuilder.Entity("Question", b =>
+                {
+                    b.HasOne("FormulaireService.Models.SectionFormulaire", "SectionFormulaire")
+                        .WithMany("Questions")
+                        .HasForeignKey("SectionFormId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Formulaire");
+                    b.Navigation("SectionFormulaire");
+                });
 
-                    b.Navigation("Question");
+            modelBuilder.Entity("FormulaireService.Models.Formulaire", b =>
+                {
+                    b.Navigation("Sections");
+                });
+
+            modelBuilder.Entity("FormulaireService.Models.SectionFormulaire", b =>
+                {
+                    b.Navigation("Questions");
                 });
 #pragma warning restore 612, 618
         }

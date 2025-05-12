@@ -12,8 +12,8 @@ using UserService;
 namespace UserService.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20250503201812_CreateAdminTable")]
-    partial class CreateAdminTable
+    [Migration("20250504151204_CreateUserSchemaaa")]
+    partial class CreateUserSchemaaa
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,27 @@ namespace UserService.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("UserService.Models.Admin", b =>
+                {
+                    b.Property<int>("AdminId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AdminId"));
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId1")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("AdminId");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("Admins");
+                });
 
             modelBuilder.Entity("UserService.Models.Professor", b =>
                 {
@@ -96,6 +117,17 @@ namespace UserService.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("UserService.Models.Admin", b =>
+                {
+                    b.HasOne("UserService.Models.Users", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("UserService.Models.Professor", b =>

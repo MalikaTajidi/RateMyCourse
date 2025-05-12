@@ -12,8 +12,8 @@ using UserService;
 namespace UserService.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20250503202138_CreateAdminTable2")]
-    partial class CreateAdminTable2
+    [Migration("20250504151442_CreateUserSchema")]
+    partial class CreateUserSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace UserService.Migrations
+namespace FormulaireService.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateAdminTable : Migration
+    public partial class lastmigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
