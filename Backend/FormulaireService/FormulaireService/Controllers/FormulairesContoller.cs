@@ -203,6 +203,32 @@ namespace FormulaireService.Controllers
             return Ok(new { message = "Section supprimée avec succès" });
         }
 
+        // POST: api/Formulaires/{formulaireId}/Sections
+        [HttpPost("{formulaireId}/Sections")]
+        public async Task<IActionResult> AddSectionToFormulaire(int formulaireId, [FromBody] SectionFormulaire sectionDto)
+        {
+            // Vérifier que le formulaire existe
+            var formulaire = await _context.Formulaires
+                                           .Include(f => f.Sections)
+                                           .FirstOrDefaultAsync(f => f.FormulaireId == formulaireId);
+
+            if (formulaire == null)
+                return NotFound("Formulaire not found");
+
+            // Créer une nouvelle section
+            var section = new SectionFormulaire
+            {
+                Description = sectionDto.Description,
+                Questions = new List<Question>()  // On laisse vide ou rempli si nécessaire
+            };
+
+            // Ajouter la section au formulaire
+            formulaire.Sections.Add(section);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Section ajoutée avec succès", section });
+        }
 
 
 
