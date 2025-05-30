@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UserService.Models;
-using UserService.Models.UserService.Models;
+using UserService.Models;
 
 namespace UserService
 {
@@ -14,6 +14,13 @@ namespace UserService
         public DbSet<Professor> Profs { get; set; }
         public DbSet<Admin> Admins { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Contrainte unique sur Email
+            modelBuilder.Entity<Users>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+        }
     }
 
 }

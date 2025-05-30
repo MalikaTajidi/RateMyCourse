@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using UserService.Models;
 using UserService.Models.DTO;
-using UserService.Models.UserService.Models;
+using UserService.Models;
 using UserService.Services;
 
 namespace UserService.Controllers

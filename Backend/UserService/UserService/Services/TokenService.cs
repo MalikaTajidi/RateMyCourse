@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Text;
-using UserService.Models.UserService.Models;
+using UserService.Models;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

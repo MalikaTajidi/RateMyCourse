@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UserService.Models
-{
     namespace UserService.Models
     {
         public class Users
@@ -10,6 +8,7 @@ namespace UserService.Models
             public int Id { get; set; }
             public string firstName { get; set; }
             public string lastName { get; set; }
+            [Required]
             public string Email { get; set; }
             public string Password { get; set; }
             public string Role { get; set; } // Etudiant, Enseignant, Professionnel, Admin
@@ -19,4 +18,4 @@ namespace UserService.Models
 
         }
     }
-}
+
