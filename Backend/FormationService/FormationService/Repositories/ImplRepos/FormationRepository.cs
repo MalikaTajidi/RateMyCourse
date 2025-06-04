@@ -308,7 +308,15 @@ namespace FormationService.Repositories.ImplRepos
         .Distinct()
         .ToListAsync();
         }
+
+
+
+        public async Task<Module?> GetModuleByIdAsync(int moduleId)
+        {
+            return await _context.Modules
+                .FirstOrDefaultAsync(m => m.ModuleId == moduleId);
+        }
+
+
     }
 }
-
-

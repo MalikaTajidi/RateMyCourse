@@ -17,6 +17,7 @@ namespace FormationService.Repositories.IRepos
         Task<IEnumerable<Formation>> SearchFormationsAsync(string? keyword);
 
         Task<IEnumerable<ModuleByNiveauResponse>> GetModulesByNiveauIdAsync(int niveauId);
+        Task<Module?> GetModuleByIdAsync(int moduleId);
 
     }
 }

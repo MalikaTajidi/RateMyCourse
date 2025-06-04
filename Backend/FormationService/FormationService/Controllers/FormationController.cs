@@ -92,5 +92,24 @@ namespace FormationService.Controllers
             }
         }
 
+
+        [HttpGet("modules/{id}")]
+        public async Task<ActionResult<ModuleByNiveauResponse>> GetModuleById(int id)
+        {
+            try
+            {
+                var module = await _repository.GetModuleByIdAsync(id);
+                if (module == null)
+                    return NotFound();
+
+                return Ok(module);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+
     }
 }

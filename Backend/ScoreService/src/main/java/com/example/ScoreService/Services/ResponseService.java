@@ -8,9 +8,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.example.ScoreService.DTO.FormulaireProfDTO;
 import com.example.ScoreService.DTO.FormulaireReponseDTO;
+import com.example.ScoreService.DTO.ModuleDTO;
 import com.example.ScoreService.DTO.ScoreParModuleDTO;
 import com.example.ScoreService.DTO.SectionReponseDTO;
 import com.example.ScoreService.DTO.StatistiqueScoreFormationDTO;
@@ -36,6 +38,8 @@ public class ResponseService {
 
     @Autowired
     private ScoreProfRepository scoreProfRepository;
+    @Autowired
+private RestTemplate restTemplate;
 
 
     public void enregistrerReponses(FormulaireReponseDTO form) {
@@ -86,7 +90,6 @@ double totalScore = (moyenne / 5.0) * 100.0;
         }
     }
 
-   
 
     public void enregistrerReponsesProf(FormulaireProfDTO form) {
         for (SectionReponseDTO section : form.getSection()) {
@@ -137,27 +140,32 @@ double totalScore = (moyenne / 5.0) * 100.0;
             default -> 0.0;
         };
     }
-    public StatistiqueScoreFormationDTO getStatistiquesParModule(int formationId, int niveauId) {
-        List<Score> scores = scoreRepository.findByFormationIdAndNiveauId(formationId, niveauId);
     
-        Map<Integer, List<Score>> groupedByModule = scores.stream()
-            .collect(Collectors.groupingBy(Score::getModuleId));
-    
-        List<ScoreParModuleDTO> modules = groupedByModule.entrySet().stream()
-            .map(entry -> {
-                int moduleId = entry.getKey();
-                List<Score> moduleScores = entry.getValue();
-                double averageScore = moduleScores.stream()
-                    .mapToDouble(Score::getScore)
-                    .average()
-                    .orElse(0.0);
-                return new ScoreParModuleDTO(moduleId, averageScore);
-            })
-            .collect(Collectors.toList());
-    
-        return new StatistiqueScoreFormationDTO(formationId, niveauId, modules);
-    }
-    
+public StatistiqueScoreFormationDTO getStatistiquesParModule(int formationId, int niveauId) {
+    List<Score> scores = scoreRepository.findByFormationIdAndNiveauId(formationId, niveauId);
+
+    Map<Integer, List<Score>> groupedByModule = scores.stream()
+        .collect(Collectors.groupingBy(Score::getModuleId));
+
+    List<ScoreParModuleDTO> modules = groupedByModule.entrySet().stream()
+        .map(entry -> {
+            int moduleId = entry.getKey();
+            List<Score> moduleScores = entry.getValue();
+            double averageScore = moduleScores.stream()
+                .mapToDouble(Score::getScore)
+                .average()
+                .orElse(0.0);
+
+            // Appel au microservice formation pour récupérer les infos détaillées du module
+            String url = "http://formationservice/api/responses//modules/" + moduleId;
+            ModuleDTO moduleInfo = restTemplate.getForObject(url, ModuleDTO.class);
+
+            return new ScoreParModuleDTO(moduleId, averageScore, moduleInfo);
+        })
+        .collect(Collectors.toList());
+
+    return new StatistiqueScoreFormationDTO(formationId, niveauId, modules);
+}
 public Map<String, Object> getStatsParSection(int formationId, int niveauId, int moduleId) {
     List<Score> scores = scoreRepository.findByFormationIdAndNiveauIdAndModuleId(formationId, niveauId, moduleId);
 
@@ -176,12 +184,18 @@ public Map<String, Object> getStatsParSection(int formationId, int niveauId, int
         })
         .collect(Collectors.toList());
 
+    // Appel au microservice FormationService pour récupérer les infos du module
+    String moduleServiceUrl = "https://localhost:7179/api/Formulaires/DeleteSection/19" + moduleId; // change l’URL selon ton infra
+    ModuleDTO moduleInfo = restTemplate.getForObject(moduleServiceUrl, ModuleDTO.class);
+
     Map<String, Object> result = new HashMap<>();
     result.put("formationId", formationId);
     result.put("niveauId", niveauId);
     result.put("moduleId", moduleId);
+    result.put("moduleInfo", moduleInfo);  // <-- infos récupérées du microservice
     result.put("sections", sections);
 
     return result;
 }
+
 }

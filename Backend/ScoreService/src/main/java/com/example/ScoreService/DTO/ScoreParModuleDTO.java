@@ -10,4 +10,7 @@ import lombok.NoArgsConstructor;
 public class ScoreParModuleDTO {
     private int moduleId;
     private double score;
+     private ModuleDTO moduleInfo; 
+
+
 }
