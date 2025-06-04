@@ -157,8 +157,7 @@ public StatistiqueScoreFormationDTO getStatistiquesParModule(int formationId, in
                 .orElse(0.0);
 
             // Appel au microservice formation pour récupérer les infos détaillées du module
-            String url = "http://formationservice/api/responses//modules/" + moduleId;
-            ModuleDTO moduleInfo = restTemplate.getForObject(url, ModuleDTO.class);
+String url = "http://localhost:5080/api/formationservice/formations/modules/" + moduleId;            ModuleDTO moduleInfo = restTemplate.getForObject(url, ModuleDTO.class);
 
             return new ScoreParModuleDTO(moduleId, averageScore, moduleInfo);
         })
