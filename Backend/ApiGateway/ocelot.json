@@ -26,7 +26,7 @@
     },
     {
       "DownstreamPathTemplate": "/api/Formulaires/{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
