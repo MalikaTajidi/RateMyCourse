@@ -21,7 +21,7 @@ jobs:
 
       - name: Build backend JAR
         run: |
-          cd backend
+          cd Backend/ScoreService
           mvn clean package -DskipTests
 
       - name: Log in to Docker Hub
