@@ -44,7 +44,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./Backend/UserService/UserService
-          file: Dockerfile
+          file: ./Backend/UserService/UserService/Dockerfile
           push: false
           tags: ${{ secrets.DOCKER_USERNAME }}/user-service:latest
 
@@ -52,6 +52,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./Backend/UserService/UserService
-          file: Dockerfile
+          file: ./Backend/UserService/UserService/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/user-service:latest
