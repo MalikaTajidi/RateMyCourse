@@ -44,7 +44,7 @@ namespace FormulaireService.Controllers
                     var question = new Question
                     {
                         Content = questionDto.Content
-                        // Pas besoin d’assigner SectionFormulaire ici, car EF va le faire via la navigation
+                        // Pas besoin dï¿½assigner SectionFormulaire ici, car EF va le faire via la navigation
                     };
                     section.Questions.Add(question);
                 }
@@ -73,11 +73,11 @@ namespace FormulaireService.Controllers
             if (formulaire == null)
                 return NotFound();
 
-            // Supprimer le formulaire et toutes ses sections et questions liées, en cascade (configuré dans OnModelCreating)
+            // Supprimer le formulaire et toutes ses sections et questions liï¿½es, en cascade (configurï¿½ dans OnModelCreating)
             _context.Formulaires.Remove(formulaire);
             await _context.SaveChangesAsync();
 
-            // Retourner une réponse JSON avec le message de succès
+            // Retourner une rï¿½ponse JSON avec le message de succï¿½s
             return Ok(new { message = "Form deleted successfully" });
         }
 
@@ -92,7 +92,7 @@ namespace FormulaireService.Controllers
                 .FirstOrDefaultAsync(f => f.FormulaireId == id);
 
             if (formulaire == null)
-                return NotFound();  // Si le formulaire n'est pas trouvé, retourner 404
+                return NotFound();  // Si le formulaire n'est pas trouvï¿½, retourner 404
 
             return Ok(new
             {
@@ -109,7 +109,7 @@ namespace FormulaireService.Controllers
                         content = q.Content
                     })
                 })
-            });  // Retourner le formulaire trouvé avec ses sections et questions
+            });  // Retourner le formulaire trouvï¿½ avec ses sections et questions
         }
 
 
@@ -122,7 +122,7 @@ namespace FormulaireService.Controllers
             var formulaires = await _context.Formulaires
                 .Include(f => f.Sections)  // Inclure les sections pour chaque formulaire
                     .ThenInclude(s => s.Questions)  // Inclure les questions pour chaque section
-                .ToListAsync();  // Récupérer tous les formulaires avec leurs données liées
+                .ToListAsync();  // Rï¿½cupï¿½rer tous les formulaires avec leurs donnï¿½es liï¿½es
 
             var result = formulaires.Select(f => new
             {
@@ -148,66 +148,66 @@ namespace FormulaireService.Controllers
         [HttpPost("SectionFormulaires/Questions/{sectionFormId}")]
         public async Task<IActionResult> AddQuestionToSection(int sectionFormId, [FromBody] Question question)
         {
-            // Vérifie que la section existe
+            // Vï¿½rifie que la section existe
             var section = await _context.SectionFormulaires
                                          .FirstOrDefaultAsync(s => s.SecFormId == sectionFormId);
 
             if (section == null)
                 return NotFound("Section not found");
 
-            // Associe la section à la question via la clé étrangère
-            question.SectionFormId = section.SecFormId; // Clé étrangère
+            // Associe la section ï¿½ la question via la clï¿½ ï¿½trangï¿½re
+            question.SectionFormId = section.SecFormId; // Clï¿½ ï¿½trangï¿½re
 
-            // Ajoute la question à la base de données
+            // Ajoute la question ï¿½ la base de donnï¿½es
             _context.Questions.Add(question);
             await _context.SaveChangesAsync();
 
-            // Retourne une réponse personnalisée
-            return Ok(new { message = "Question ajoutée avec succès", question });
+            // Retourne une rï¿½ponse personnalisï¿½e
+            return Ok(new { message = "Question ajoutï¿½e avec succï¿½s", question });
         }
 
         [HttpDelete("SectionFormulaires/deleteQuestions/{questionId}")]
         public async Task<IActionResult> DeleteQuestion(int questionId)
         {
-            // Vérifier si la question existe dans la base de données
+            // Vï¿½rifier si la question existe dans la base de donnï¿½es
             var question = await _context.Questions
                                          .FirstOrDefaultAsync(q => q.QuestionId == questionId);
 
             if (question == null)
                 return NotFound("Question not found");  // Retourner 404 si la question n'existe pas
 
-            // Supprimer la question de la base de données
+            // Supprimer la question de la base de donnï¿½es
             _context.Questions.Remove(question);
             await _context.SaveChangesAsync();
 
-            // Retourner un message de succès
-            return Ok(new { message = "Question supprimée avec succès" });
+            // Retourner un message de succï¿½s
+            return Ok(new { message = "Question supprimï¿½e avec succï¿½s" });
         }
 
 
         [HttpDelete("DeleteSection/{secFormId}")]
         public async Task<IActionResult> DeleteSection(int secFormId)
         {
-            // Vérifier si la section existe dans la base de données
+            // Vï¿½rifier si la section existe dans la base de donnï¿½es
             var section = await _context.SectionFormulaires
                                          .FirstOrDefaultAsync(s => s.SecFormId == secFormId);
 
             if (section == null)
                 return NotFound("Section not found");  // Retourner 404 si la section n'existe pas
 
-            // Supprimer la section de la base de données
+            // Supprimer la section de la base de donnï¿½es
             _context.SectionFormulaires.Remove(section);
             await _context.SaveChangesAsync();
 
-            // Retourner un message de succès
-            return Ok(new { message = "Section supprimée avec succès" });
+            // Retourner un message de succï¿½s
+            return Ok(new { message = "Section supprimï¿½e avec succï¿½s" });
         }
 
         // POST: api/Formulaires/{formulaireId}/Sections
         [HttpPost("{formulaireId}/Sections")]
         public async Task<IActionResult> AddSectionToFormulaire(int formulaireId, [FromBody] SectionFormulaire sectionDto)
         {
-            // Vérifier que le formulaire existe
+            // Vï¿½rifier que le formulaire existe
             var formulaire = await _context.Formulaires
                                            .Include(f => f.Sections)
                                            .FirstOrDefaultAsync(f => f.FormulaireId == formulaireId);
@@ -215,11 +215,11 @@ namespace FormulaireService.Controllers
             if (formulaire == null)
                 return NotFound("Formulaire not found");
 
-            // Créer une nouvelle section
+            // Crï¿½er une nouvelle section
             var section = new SectionFormulaire
             {
                 Description = sectionDto.Description,
-                Questions = new List<Question>()  // On laisse vide ou rempli si nécessaire
+                Questions = new List<Question>()  // On laisse vide ou rempli si nï¿½cessaire
             };
 
             // Ajouter la section au formulaire
@@ -227,7 +227,7 @@ namespace FormulaireService.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Section ajoutée avec succès", section });
+            return Ok(new { message = "Section ajoutï¿½e avec succï¿½s", section });
         }
 
 
