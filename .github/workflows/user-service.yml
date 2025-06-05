@@ -37,7 +37,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
-           context: ./UserService
+           context: ./UserService/UserService
            dockerfile: Dockerfile
            push: false
            tags: ${{ secrets.DOCKER_HUB_USERNAME }}/user-service:latest
@@ -52,7 +52,7 @@ jobs:
       - name: push image
         uses: docker/build-push-action@v5
         with:
-           context: ./UserService
+           context: ./UserService/UserService
            dockerfile: Dockerfile
            push: true
            tags: ${{ secrets.DOCKER_USERNAME }}/user-service:latest
