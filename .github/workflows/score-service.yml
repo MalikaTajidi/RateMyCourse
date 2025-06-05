@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Score service Image
         run: |
-          cd backend
+          cd Backend/ScoreService
           docker build -t ${{ secrets.DOCKER_USERNAME }}/score-service:latest .
 
       - name: Push Score service Image
