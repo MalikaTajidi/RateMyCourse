@@ -9,6 +9,9 @@ builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange
 // Ajouter les services Ocelot
 builder.Services.AddOcelot();
 
+// 👉 ajouter le port ici :
+builder.WebHost.UseUrls("http://localhost:7000");
+
 var app = builder.Build();
 
 // Utiliser Ocelot comme middleware

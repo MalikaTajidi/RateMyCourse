@@ -20,7 +20,7 @@ namespace FormationService.Repositories.ImplRepos
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                
+
                 if (formation.ModuleFormations == null)
                 {
                     formation.ModuleFormations = new List<ModuleFormation>();
@@ -162,8 +162,8 @@ namespace FormationService.Repositories.ImplRepos
                 // 6. Supprimer les modules orphelins
                 foreach (var module in modules)
                 {
-                        _context.Modules.Remove(module);
-                    
+                    _context.Modules.Remove(module);
+
                 }
 
                 await _context.SaveChangesAsync();
@@ -296,17 +296,17 @@ namespace FormationService.Repositories.ImplRepos
 
         public async Task<IEnumerable<ModuleByNiveauResponse>> GetModulesByNiveauIdAsync(int niveauId)
         {
-           return await _context.ModuleFormations
-        .Where(mf => mf.NiveauId == niveauId)
-        .Select(mf => new ModuleByNiveauResponse
-        {
-            ModuleId = mf.Module.ModuleId,
-            ModuleName = mf.Module.Name,
-            //ModuleDescription = mf.Module.Description,
-            Filiere = mf.Formation.FormationName 
-        })
-        .Distinct()
-        .ToListAsync();
+            return await _context.ModuleFormations
+         .Where(mf => mf.NiveauId == niveauId)
+         .Select(mf => new ModuleByNiveauResponse
+         {
+             ModuleId = mf.Module.ModuleId,
+             ModuleName = mf.Module.Name,
+             //ModuleDescription = mf.Module.Description,
+             Filiere = mf.Formation.FormationName
+         })
+         .Distinct()
+         .ToListAsync();
         }
 
 
