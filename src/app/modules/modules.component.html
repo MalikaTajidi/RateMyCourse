@@ -1,0 +1,64 @@
+<!-- modules.component.html -->
+<div class="modules-wrapper">
+    <div class="modules-header">
+      <h1>My modules</h1>
+      <p>Consultez tous les modules de votre programme et procédez à leur évaluation.</p>
+    </div>
+
+    <div class="search-filters">
+      <div class="search-bar">
+        <input type="text" placeholder="Rechercher un module..." (input)="onSearch($event)" />
+      </div>
+
+      <div class="filters">
+        <select (change)="onFiliereChange($event)" class="filter-dropdown">
+          <option *ngFor="let filiere of filieres" [value]="filiere">{{ filiere }}</option>
+        </select>
+
+        <select (change)="onStatusChange($event)" class="filter-dropdown">
+          <option *ngFor="let statut of statuts" [value]="statut">{{ statut }}</option>
+        </select>
+      </div>
+    </div>
+
+
+    <div class="modules-grid">
+      <div class="module-card" *ngFor="let module of filteredModules">
+    
+
+          <div (click)="handl()" class="module-content">
+            <div class="module-header">
+              <h2>{{ module.title }}</h2>
+              <span class="status-badge" [ngClass]="{
+                'status-completed': module.status === 'Terminé',
+                'status-in-progress': module.status === 'En cours',
+                'status-not-started': module.status === 'Non commencé'
+              }">{{ module.status }}</span>
+            </div>
+  
+            <p class="module-description">{{ module.description }}</p>
+  
+            <div class="module-footer">
+              <div class="module-filiere">
+                <span>Filière: {{ module.filiere }}</span>
+              </div>
+              <div class="module-credits">
+                <span>Crédits: {{ module.credits }}</span>
+              </div>
+  
+            
+            </div>
+            <div class="module-actions">
+              <button class="evaluer-button" (click)="evaluerModule(module)">Évaluer</button>
+            </div>
+          </div>
+      
+      </div>
+    </div>
+</div>  
+
+
+
+
+
+

@@ -11,7 +11,7 @@ export class SidbarComponent {
 
 
 
-  activeRoute = '/dashboard'; // valeur par défaut
+  activeRoute = '/dashbord'; // valeur par défaut
   isSidebarHidden = false;
 
 

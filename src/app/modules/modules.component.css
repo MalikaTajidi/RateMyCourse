@@ -1,0 +1,258 @@
+/* modules.component.scss */
+.modules-container {
+  padding: 20px;
+  background-color: #0a5cd7;
+  min-height: 100vh;
+}
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+}
+
+
+.modules-header { 
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+    align-items: center;
+  }
+}
+
+.search-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.search-bar {
+  flex: 1;
+  
+  input {
+    width: 80%;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    
+    &:focus {
+      border-color: #4285f4;
+    }
+  }
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+}
+
+.filter-dropdown {
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  font-size: 16px;
+  min-width: 180px;
+  cursor: pointer;
+  outline: none;
+  
+  &:focus {
+    border-color: #4285f4;
+  }
+}
+
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.module-card {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #4285f4;
+  transition: transform 0.2s, box-shadow 0.2s;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.module-content {
+  padding: 20px;
+}
+
+.module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    flex: 1;
+  }
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.status-completed {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-in-progress {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.status-not-started {
+  background-color: #f5f5f5;
+  color: #757575;
+}
+
+.module-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.module-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #757575;
+}
+@media (max-width: 1024px) {
+  .search-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .modules-header h1 {
+    font-size: 22px;
+  }
+
+  .modules-header p {
+    font-size: 14px;
+  }
+
+  .module-header h2 {
+    font-size: 18px;
+  }
+
+  .modules-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+  }
+
+  .search-bar input,
+  .filter-dropdown {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .module-description {
+    font-size: 13px;
+  }
+
+  .module-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+.view-details {
+  background-color: #4285f4;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #3367d6;
+  }
+}
+.center-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: white; /* ou autre selon ton thème */
+  padding: 100px;
+  box-sizing: border-box;
+}
+.modules-container {
+  background-color: beige;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  width: 200%;
+  max-width: 800px;
+}
+.evaluer-button {
+  margin-top: 12px;
+  padding: 10px 18px;
+  background-color: #2d89ef;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.evaluer-button:hover {
+  background-color: #1b5dbf;
+}
+
+.module-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+.modules-wrapper {
+  margin: 20px;
+  padding: 20px;
+}
+
+
+

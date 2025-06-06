@@ -1,8 +1,8 @@
 
 
-<app-sidbar></app-sidbar>
+<app-sidbar *ngIf="!isPublicPage"></app-sidbar>
 
-<div [ngClass]="[this.hidden==false ? 'main-content' : 'expanded' ]">
+<div [ngClass]="[this.hidden==false && !isPublicPage ? 'main-content' : 'expanded' ]">
   <router-outlet></router-outlet>
 </div>
 

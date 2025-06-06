@@ -1,0 +1,143 @@
+<header [class.scrolled]="isHeaderScrolled">
+  <nav class="container">
+    <div class="logo">EngineEval</div>
+    <ul class="nav-links">
+      <li *ngFor="let link of navLinks">
+        <a [href]="link.href" (click)="scrollToSection(link.href, $event)">
+          {{ link.label }}
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<section id="accueil" class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1>Évaluation de Programme École d'Ingénieurs</h1>
+      <p>Optimisez vos programmes pédagogiques grâce à notre plateforme d'évaluation avancée</p>
+      <button (click)="navigateToLogin()" class="cta-button">
+        Démarrer l'Évaluation
+      </button>
+    </div>
+  </div>
+</section>
+
+<section id="fonctionnalites" class="features">
+  <div class="container">
+    <h2 class="fade-in">Nos Fonctionnalités</h2>
+    <div class="features-grid">
+      <div *ngFor="let feature of features" class="feature-card fade-in">
+        <div class="feature-icon">{{ feature.icon }}</div>
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats" #statsSection>
+  <div class="container">
+    <div class="stats-grid fade-in">
+      <div *ngFor="let stat of stats" class="stat-item">
+        <h3>{{ stat.currentValue }}{{ stat.suffix }}</h3>
+        <p>{{ stat.label }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="apropos" class="about">
+  <div class="container">
+    <div class="about-content">
+      <div class="about-text fade-in">
+        <h2>À Propos du Projet</h2>
+        <p>Notre plateforme d'évaluation révolutionnaire a été conçue spécifiquement pour les écoles d'ingénieurs modernes. Nous combinons méthodologies pédagogiques avancées et technologies de pointe.</p>
+        <p>Grâce à notre approche basée sur les données, nous aidons les institutions académiques à optimiser leurs programmes, améliorer l'expérience étudiante et maintenir les plus hauts standards d'excellence.</p>
+        <p>Notre équipe multidisciplinaire d'experts en éducation, ingénieurs et data scientists travaille en permanence pour vous offrir les outils les plus performants du marché.</p>
+      </div>
+      <div class="about-image fade-in">
+        <span>🎓</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="container">
+    <h2 class="fade-in">ContacteNous</h2>
+    <form (ngSubmit)="onSubmit()" class="contact-form fade-in">
+      <div class="form-group">
+        <label for="nom">Nom de l'École *</label>
+        <input 
+          type="text" 
+          id="nom" 
+          formControlName="nom"
+          [class.error]="isFieldInvalid('nom')"
+          placeholder="Nom de votre école d'ingénieurs"
+        >
+        <div *ngIf="isFieldInvalid('nom')" class="error-message">
+          {{ getFieldError('nom') }}
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email"
+          [class.error]="isFieldInvalid('email')"
+          placeholder="votre.email@ecole.fr"
+        >
+        <div *ngIf="isFieldInvalid('email')" class="error-message">
+          {{ getFieldError('email') }}
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="telephone">Téléphone</label>
+        <input 
+          type="tel" 
+          id="telephone" 
+          formControlName="telephone"
+          placeholder="+33 1 23 45 67 89"
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="programme">Programme à Évaluer</label>
+        <input 
+          type="text" 
+          id="programme" 
+          formControlName="programme" 
+          placeholder="Ex: Génie Informatique, Génie Civil, Génie Mécanique..."
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea 
+          id="message" 
+          formControlName="message" 
+          rows="5" 
+          placeholder="Décrivez vos besoins en évaluation, vos objectifs et toute information pertinente..."
+        ></textarea>
+      </div>
+      
+      <button 
+        type="submit" 
+        [class]="getSubmitButtonClass()"
+        [disabled]="isSubmitting"
+      >
+        {{ getSubmitButtonText() }}
+      </button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2025 EngineEval. Tous droits réservés. | Excellence en Évaluation Académique</p>
+  </div>
+</footer>
