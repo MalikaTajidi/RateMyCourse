@@ -41,6 +41,7 @@ namespace UserService.Controllers
             {
                 return BadRequest("Mot de passe incorrect");
             }
+
             if (user.IsFirstLogin)
             {
                 return Ok(new
@@ -54,15 +55,37 @@ namespace UserService.Controllers
 
             var token = _tokenService.GenerateJwtToken(user);
 
+            // Si c'est un étudiant, on récupère son NiveauId
+            int? niveauId = null;
+            if (user.Role == "Etudiant")
+            {
+                var student = _context.Students.FirstOrDefault(s => s.UserId == user.Id);
+                if (student != null)
+                {
+                    niveauId = student.NiveauId;
+                }
+            }
+
+            var userResponse = new
+            {
+                user.Id,
+                user.Email,
+                user.firstName,
+                user.lastName,
+                user.Role,
+                user.FormationId,
+                NiveauId = niveauId
+            };
+
             return Ok(new
             {
                 message = "Connexion réussie",
                 firstLogin = false,
-
                 token = token,
-                user = new { user.Email, user.firstName,user.lastName,user.FormationId } 
+                user = userResponse
             });
         }
+
 
 
         [HttpPost("add-admin")]
