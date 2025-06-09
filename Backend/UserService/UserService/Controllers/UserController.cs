@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using UserService.Models;
 using UserService.Models.DTO;
 using UserService.Services;
 
@@ -80,6 +81,32 @@ namespace UserService.Controllers
 
             return Ok(students);
         }
+        [HttpGet("students/{userId}")]
+        public async Task<ActionResult<Student>> GetStudentByUserId(int userId)
+        {
+            var student = await _context.Students
+                .Include(s => s.User)
+                .FirstOrDefaultAsync(s => s.UserId == userId);
+
+            if (student == null)
+                return NotFound();
+
+            return Ok(student);
+        }
+
+        [HttpGet("profs/{userId}")]
+        public async Task<ActionResult<Professor>> GetProfessorByUserId(int userId)
+        {
+            var professor = await _context.Profs
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.UserId == userId);
+
+            if (professor == null)
+                return NotFound();
+
+            return Ok(professor);
+        }
+
 
 
     }
