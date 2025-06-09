@@ -134,6 +134,19 @@ namespace FormationService.Controllers
             return Ok(modulesWithInfos);
         }
 
+        [HttpGet("get-all-niveaux")]
+         public IActionResult GetAllNiveaux()
+          {
+        var niveaux = _context.Niveaux
+         .Select(n => new
+        {
+            n.NiveauId,
+            n.Name
+        })
+        .ToList();
+
+    return Ok(niveaux);
+      }
 
     }
 }
