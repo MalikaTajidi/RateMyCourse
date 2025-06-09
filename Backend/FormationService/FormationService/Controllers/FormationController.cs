@@ -2,6 +2,7 @@
 using FormationService.Repositories.IRepos;
 using FormationService.services.interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace FormationService.Controllers
@@ -12,11 +13,13 @@ namespace FormationService.Controllers
     {
         private readonly IFormationService _formationService;
         private readonly IFormationRepository _repository;
+        private readonly FormationDbContext _context;
 
-        public FormationController(IFormationService formationService, IFormationRepository repository)
+        public FormationController(IFormationService formationService, IFormationRepository repository, FormationDbContext context)
         {
             _formationService = formationService;
             _repository = repository;
+            _context = context;
         }
 
         [HttpPost]
@@ -108,6 +111,27 @@ namespace FormationService.Controllers
             {
                 return StatusCode(500, "Internal server error");
             }
+        }
+
+        [HttpGet("get-all-modules")]
+        public IActionResult GetAllModules()
+        {
+            var modulesWithInfos = _context.ModuleFormations
+                .Include(mf => mf.Module)
+                .Include(mf => mf.Formation)
+                .Include(mf => mf.Niveau)
+                .Select(mf => new
+                {
+                    mf.Module.ModuleId,
+                    mf.Module.Name,
+                    mf.Formation.FormationId,
+                    FormationName = mf.Formation.FormationName,
+                    mf.Niveau.NiveauId,
+                    NiveauName = mf.Niveau.Name
+                })
+                .ToList();
+
+            return Ok(modulesWithInfos);
         }
 
 

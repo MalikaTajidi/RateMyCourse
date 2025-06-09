@@ -46,6 +46,41 @@ namespace UserService.Controllers
             return Ok(new { message = "Niveau de l'étudiant mis à jour avec succès." });
         }
 
+        [HttpGet("getStudents")]
+        public IActionResult GetStudents()
+        {
+            var students = (from s in _context.Students
+                            join u in _context.Users on s.UserId equals u.Id
+                            select new
+                            {
+                                u.Id,
+                                u.firstName,
+                                u.lastName,
+                                u.Email,
+                                u.FormationId,
+                                s.NiveauId
+                            }).ToList();
+
+            return Ok(students);
+        }
+
+        [HttpGet("getProfs")]
+        public IActionResult GetProfs()
+        {
+            var students = (from p in _context.Profs
+                            join u in _context.Users on p.UserId equals u.Id
+                            select new
+                            {
+                                u.Id,
+                                u.firstName,
+                                u.lastName,
+                                u.Email,
+                                u.FormationId,
+                            }).ToList();
+
+            return Ok(students);
+        }
+
 
     }
 }
