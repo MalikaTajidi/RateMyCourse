@@ -31,7 +31,7 @@ namespace UserService.Services
                 client.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
 
                 // Authentification avec un mot de passe d'application (jamais le vrai mot de passe)
-                client.Authenticate("labjakhsafae160@gmail.com", "usdr oozx bcxz kgeh");
+                client.Authenticate("labjakhsafae160@gmail.com", "pxwo egjt mqye xesx");
 
                 // Envoi de l'e-mail
                 client.Send(message);
