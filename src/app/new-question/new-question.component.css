@@ -1,0 +1,82 @@
+.form-container {
+  max-width: 800px;
+  margin: 40px auto;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.title-section {
+  border-bottom: 2px solid #dcdce3;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.title-section h1 {
+  color: #3C91E6;
+  font-weight: 600;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #555;
+}
+
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  padding: 10px 15px;
+}
+
+.form-control:focus {
+  border-color: #3C91E6;
+  box-shadow: 0 0 0 0.2rem rgba(60, 145, 230, 0.25);
+}
+
+.module-card {
+  background-color: #e9f2ff;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 4px solid #3C91E6;
+}
+
+.module-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-action {
+  border-radius: 8px;
+  padding: 8px 15px;
+}
+
+.add-module-btn {
+  background-color: #e9f2ff;
+  color: #3C91E6;
+  border: 1px dashed #3C91E6;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 25px;
+}
+
+.add-module-btn:hover {
+  background-color: #d4e5ff;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.required-field::after {
+  content: "*";
+  color: red;
+  margin-left: 5px;
+}

@@ -1,0 +1,45 @@
+
+<div class="form-container">
+  <h2>{{ editMode ? 'Modifier enseignant' : 'Ajouter un enseignant' }}</h2>
+
+  <form  [formGroup]="ProfilFormGroup"  >
+    <div class="form-group">
+      <label for="nom" formControlName="nom">Nom</label>
+      <input type="text" id="nom" formControlName="firstName" placeholder="Entrez le nom" />
+    </div>
+
+    <div class="form-group">
+      <label for="prenom" >Prénom</label>
+      <input formControlName="prenom" type="text" id="prenom" formControlName="lastName" placeholder="Entrez le prénom" />
+    </div>
+
+    <div class="form-group">
+      <label for="email"  >Email</label>
+      <input formControlName="email" type="email" id="email" formControlName="email" placeholder="exemple@mail.com" />
+    </div>
+
+    <div class="form-group">
+      <label for="FormationId">Formation</label>
+      <select id="FormationId" formControlName="FormationId">
+        <option value="'">-- Choisir une formation --</option>
+        <option *ngFor="let formation of formations" [value]="formation.formationId">
+          {{ formation.formationName }}
+        </option>
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+      <label for="photoUrl">Photo (URL)</label>
+      <input formControlName=" photoUrl" type="text" id="photoUrl" formControlName="photoUrl" placeholder="https://..." />
+    </div>
+
+    <div class="form-actions">
+      <button (click)="onSaveProfil()" type="submit" class="submit-btn">Ajouter</button>
+      <button routerLink="/profil" type="button" class="cancel-btn" >Annuler</button>
+    </div>
+  </form>
+</div>
+
+

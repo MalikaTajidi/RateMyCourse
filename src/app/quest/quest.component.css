@@ -1,0 +1,126 @@
+.formulaires-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #34495e;
+}
+
+.add-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-btn:hover {
+  background-color: #2980b9;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  margin-bottom: 24px;
+}
+
+.formulaires-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.formulaires-table th,
+.formulaires-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.formulaires-table th {
+  background-color: #f7f9fc;
+  color: #34495e;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.formulaires-table tbody tr:hover {
+  background-color: #f5f9ff;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: #f8f9fa;
+  color: #7f8c8d;
+  transition: background-color 0.2s;
+}
+
+.action-btn.view {
+  color: #3498db;
+}
+
+.action-btn.edit {
+  color: #f39c12;
+}
+
+.action-btn.delete {
+  color: #e74c3c;
+}
+
+.action-btn:hover {
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.page-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.page-btn:hover {
+  background-color: #2980b9;
+}
+
+.pagination span {
+  align-self: center;
+  font-weight: bold;
+}
