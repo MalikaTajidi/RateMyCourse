@@ -1,64 +1,80 @@
 <!-- modules.component.html -->
-<div class="modules-wrapper">
-    <div class="modules-header">
-      <h1>My modules</h1>
-      <p>Consultez tous les modules de votre programme et procédez à leur évaluation.</p>
+<div class="modules-container adaptive-container">
+  <div class="header adaptive-card">
+    <h1>Mes modules</h1>
+    <p>Consultez tous les modules de votre programme et procédez à leur évaluation.</p>
+    <button class="refresh-btn" (click)="refreshModules()" [disabled]="isLoading">
+      {{ isLoading ? 'Chargement...' : 'Actualiser' }}
+    </button>
+  </div>
+  
+  <!-- Message d'erreur -->
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+    <button (click)="refreshModules()">Réessayer</button>
+  </div>
+  
+  <!-- Indicateur de chargement -->
+  <div *ngIf="isLoading" class="loading-spinner">
+    <p>Chargement des modules...</p>
+  </div>
+  
+  <div *ngIf="!isLoading" class="filters-row adaptive-card">
+    <div class="search-box">
+      <input 
+        type="text" 
+        placeholder="Rechercher un module..." 
+        (input)="onSearch($event)">
     </div>
-
-    <div class="search-filters">
-      <div class="search-bar">
-        <input type="text" placeholder="Rechercher un module..." (input)="onSearch($event)" />
-      </div>
-
-      <div class="filters">
-        <select (change)="onFiliereChange($event)" class="filter-dropdown">
-          <option *ngFor="let filiere of filieres" [value]="filiere">{{ filiere }}</option>
-        </select>
-
-        <select (change)="onStatusChange($event)" class="filter-dropdown">
-          <option *ngFor="let statut of statuts" [value]="statut">{{ statut }}</option>
-        </select>
-      </div>
-    </div>
-
-
-    <div class="modules-grid">
-      <div class="module-card" *ngFor="let module of filteredModules">
     
-
-          <div (click)="handl()" class="module-content">
-            <div class="module-header">
-              <h2>{{ module.title }}</h2>
-              <span class="status-badge" [ngClass]="{
-                'status-completed': module.status === 'Terminé',
-                'status-in-progress': module.status === 'En cours',
-                'status-not-started': module.status === 'Non commencé'
-              }">{{ module.status }}</span>
-            </div>
-  
-            <p class="module-description">{{ module.description }}</p>
-  
-            <div class="module-footer">
-              <div class="module-filiere">
-                <span>Filière: {{ module.filiere }}</span>
-              </div>
-              <div class="module-credits">
-                <span>Crédits: {{ module.credits }}</span>
-              </div>
-  
-            
-            </div>
-            <div class="module-actions">
-              <button class="evaluer-button" (click)="evaluerModule(module)">Évaluer</button>
-            </div>
-          </div>
+    <div class="filter-selects">
+      <select (change)="onFiliereChange($event)">
+        <option>Toutes les filières</option>
+        <option>GINF</option>
+        <option>Informatique</option>
+        <option>Télécommunications</option>
+        <option>Data Science</option>
+        <option>Tronc commun</option>
+      </select>
       
+      <select (change)="onStatusChange($event)">
+        <option>Tous les statuts</option>
+        <option>Terminé</option>
+        <option>En cours</option>
+        <option>Non commencé</option>
+      </select>
+    </div>
+  </div>
+  
+  <!-- Message si aucun module -->
+  <div *ngIf="!isLoading && filteredModules.length === 0" class="no-modules">
+    <p>Aucun module ne correspond à vos critères de recherche.</p>
+  </div>
+  
+  <div *ngIf="!isLoading" class="modules-grid adaptive-grid">
+    <div *ngFor="let module of filteredModules" class="module-card adaptive-card">
+      <div class="module-header">
+        <h3>{{ module.name }}</h3>
+        <span class="status-badge" [ngClass]="module.status.toLowerCase().replace(' ', '-')">
+          {{ module.status }}
+        </span>
+      </div>
+      
+      <p class="module-description">{{ module.description }}</p>
+      
+      <div class="module-footer">
+        <div class="module-info">
+          <span class="filiere-tag">Filière: {{ module.filiere }}</span>
+          <span class="credits-tag">Crédits: {{ module.credits }}</span>
+        </div>
+        
+        <button 
+          class="evaluate-btn" 
+          [disabled]="false"
+          (click)="evaluateModule(module.id)">
+          Évaluer
+        </button>
       </div>
     </div>
-</div>  
-
-
-
-
-
-
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<div class="statistics-container">
+  <div class="header-card">
+    <h1>Statistiques d'Évaluation 📊</h1>
+    <p>Analyse détaillée de vos performances</p>
+  </div>
+  
+  <div class="stats-section">
+    <h2><i class="fas fa-chart-line"></i> Évolution des Notes</h2>
+    <div class="grades-evolution">
+      <div *ngFor="let semester of semesterGrades" class="semester-grade">
+        <div class="semester-label">{{ semester.semester }}</div>
+        <div class="grade-bar-container">
+          <div class="grade-bar" [style.width]="getProgressWidth(semester.grade)"></div>
+        </div>
+        <div class="grade-value">{{ semester.grade }}</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="stats-section">
+    <h2><i class="fas fa-chart-pie"></i> Répartition des Notes</h2>
+    <div class="grade-distribution">
+      <div *ngFor="let category of gradeDistribution" class="grade-category">
+        <div class="category-label" [style.color]="category.color">{{ category.category }}</div>
+        <div class="category-bar-container">
+          <div class="category-bar" [style.width]="(category.count / 6 * 100) + '%'" [style.background-color]="category.color"></div>
+        </div>
+        <div class="category-count">{{ category.count }} modules</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="stats-section">
+    <h2><i class="fas fa-comment-alt"></i> Vos Évaluations de Modules</h2>
+    <div class="module-evaluations">
+      <div *ngFor="let eval of moduleEvaluations" class="evaluation-card">
+        <div class="evaluation-header">
+          <h3>{{ eval.name }}</h3>
+        </div>
+        
+        <div class="rating-item">
+          <span class="rating-label">Enseignant</span>
+          <div class="rating-stars">
+            <i *ngFor="let star of getRatingStars(eval.professorRating)" class="fas fa-star"></i>
+          </div>
+          <span class="rating-value">{{ eval.professorRating }}/5</span>
+        </div>
+        
+        <div class="rating-item">
+          <span class="rating-label">Contenu</span>
+          <div class="rating-stars">
+            <i *ngFor="let star of getRatingStars(eval.contentRating)" class="fas fa-star"></i>
+          </div>
+          <span class="rating-value">{{ eval.contentRating }}/5</span>
+        </div>
+        
+        <div class="rating-item">
+          <span class="rating-label">Difficulté</span>
+          <div class="rating-stars">
+            <i *ngFor="let star of getRatingStars(eval.difficultyRating)" class="fas fa-star"></i>
+          </div>
+          <span class="rating-value">{{ eval.difficultyRating }}/5</span>
+        </div>
+        
+        <div class="evaluation-comment">
+          <p>"{{ eval.comment }}"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

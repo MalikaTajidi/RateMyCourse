@@ -1,0 +1,40 @@
+<!-- student-area.component.html (composant parent qui contient la sidebar et le contenu) -->
+<div class="app-layout">
+  <!-- Sidebar -->
+  <app-student-sidebar 
+    (sidebarToggled)="onSidebarToggled($event)"
+    class="app-sidebar">
+  </app-student-sidebar>
+  
+  <!-- Main Content Area -->
+  <div class="main-content"
+       [ngClass]="contentClasses">
+    <!-- Header optionnel -->
+    <header class="content-header">
+      <div class="header-actions">
+        <button class="mobile-menu-btn" (click)="toggleMobileSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h2 class="page-title">{{ currentPageTitle }}</h2>
+      </div>
+    </header>
+
+    <!-- Contenu de la page -->
+    <div class="content-body"
+         [ngClass]="contentClasses">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  
+  <!-- Overlay pour mobile -->
+  <div class="mobile-overlay"
+       [class.active]="isMobileSidebarOpen"
+       (click)="closeMobileSidebar()">
+  </div>
+
+  <!-- Assistant IA -->
+  <app-ai-assistant></app-ai-assistant>
+
+  <!-- Notifications Intelligentes -->
+  <app-smart-notifications></app-smart-notifications>
+</div>

@@ -1,0 +1,347 @@
+/* Assistant IA - Styles adaptatifs au sidebar */
+
+.ai-assistant {
+  position: fixed;
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Icône flottante de l'assistant */
+.ai-assistant-icon {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.ai-assistant-icon:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 24px rgba(59, 130, 246, 0.4);
+}
+
+.ai-assistant-icon:active {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Animation de pulsation pour les nouvelles suggestions */
+.pulse-ring {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  background: #ef4444;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Adaptation de l'icône selon l'état du sidebar */
+
+/* Sidebar étendu (desktop) */
+.ai-assistant.sidebar-expanded .ai-assistant-icon {
+  right: calc(24px + 0px); /* Marge normale */
+}
+
+/* Sidebar réduit (desktop) */
+.ai-assistant.sidebar-collapsed .ai-assistant-icon {
+  right: calc(24px + 0px); /* Même position */
+}
+
+/* Mode mobile */
+.ai-assistant.mobile-mode .ai-assistant-icon {
+  right: 16px;
+  bottom: 16px;
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+}
+
+/* Fenêtre de chat */
+.chat-window {
+  position: fixed;
+  bottom: 96px;
+  right: 24px;
+  width: 380px;
+  height: 500px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  transform: translateY(20px) scale(0.95);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-window.open {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Adaptation de la fenêtre de chat selon l'état du sidebar */
+
+/* Sidebar étendu (desktop) */
+.ai-assistant.sidebar-expanded .chat-window {
+  right: calc(24px + 0px);
+}
+
+/* Sidebar réduit (desktop) */
+.ai-assistant.sidebar-collapsed .chat-window {
+  right: calc(24px + 0px);
+}
+
+/* Mode mobile - fenêtre plein écran */
+.ai-assistant.mobile-mode .chat-window {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  transform: translateY(100%);
+}
+
+.ai-assistant.mobile-mode .chat-window.open {
+  transform: translateY(0);
+}
+
+/* En-tête du chat */
+.chat-header {
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 16px 16px 0 0;
+}
+
+.ai-assistant.mobile-mode .chat-header {
+  border-radius: 0;
+  padding: 16px 20px;
+}
+
+.chat-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Messages du chat */
+.chat-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
+}
+
+.message.user {
+  align-self: flex-end;
+}
+
+.message.assistant {
+  align-self: flex-start;
+}
+
+.message-content {
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.message.user .message-content {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message.assistant .message-content {
+  background: #f1f5f9;
+  color: #1e293b;
+  border-bottom-left-radius: 4px;
+}
+
+.message-time {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 4px;
+  padding: 0 4px;
+}
+
+.message.user .message-time {
+  text-align: right;
+}
+
+/* Zone de saisie */
+.chat-input {
+  padding: 16px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chat-input input:focus {
+  border-color: #3b82f6;
+}
+
+.chat-input button {
+  padding: 12px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+}
+
+.chat-input button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+.chat-input button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Suggestions rapides */
+.quick-suggestions {
+  padding: 12px 16px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.suggestion-btn {
+  padding: 6px 12px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.suggestion-btn:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+/* Overlay pour mobile */
+.chat-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* Scrollbar personnalisée */
+.chat-messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Animations d'entrée pour les messages */
+.message {
+  animation: slideInMessage 0.3s ease-out;
+}
+
+@keyframes slideInMessage {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

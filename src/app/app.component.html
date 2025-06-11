@@ -1,9 +1,6 @@
+<!-- Sidebar étudiant -->
+<app-student-sidebar *ngIf="isStudentRole && !isPublicPage"></app-student-sidebar>
 
+<!-- Sidebar admin/enseignant -->
 
-<app-sidbar *ngIf="!isPublicPage"></app-sidbar>
-
-<div [ngClass]="[this.hidden==false && !isPublicPage ? 'main-content' : 'expanded' ]">
-  <router-outlet></router-outlet>
-</div>
-
-
+<router-outlet></router-outlet>

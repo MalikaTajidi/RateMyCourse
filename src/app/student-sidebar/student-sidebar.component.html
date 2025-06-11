@@ -1,0 +1,86 @@
+<div [class]="sidebarClasses">
+  
+  <!-- Header -->
+  <div class="sidebar-header">
+    <div class="header-content">
+      <div class="logo-section" *ngIf="!isCollapsed || isMobile">
+        <div class="logo-icon">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div class="logo-text">
+          <h1>EvalProg</h1>
+          <p>École d'Ingénieur</p>
+        </div>
+      </div>
+      <button class="toggle-btn" (click)="toggleSidebar()" *ngIf="!isMobile">
+        <i class="fas fa-chevron-right" [class.rotated]="!isCollapsed"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Profile Section -->
+  <div class="profile-section">
+    <div class="profile-content">
+      <div class="profile-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="profile-info" *ngIf="!isCollapsed || isMobile">
+        <p class="profile-name">{{ studentInfo.name }}</p>
+        <p class="profile-level">{{ studentInfo.level }}</p>
+        <p class="profile-status">{{ studentInfo.status }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      <li *ngFor="let item of menuItems" class="nav-item">
+        <button 
+          class="nav-button"
+          [class.active]="activeItem === item.id"
+          (click)="selectMenuItem(item.id)"
+          [title]="isCollapsed && !isMobile ? item.label : ''">
+          <i class="nav-icon" [class]="item.icon" [ngClass]="item.color"></i>
+          <span class="nav-label" *ngIf="!isCollapsed || isMobile">{{ item.label }}</span>
+          <span class="nav-badge" *ngIf="item.badge && (!isCollapsed || isMobile)">{{ item.badge }}</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Stats Section -->
+  <div class="stats-section" *ngIf="!isCollapsed || isMobile">
+    <div class="stats-content">
+      <h3 class="stats-title">Progression</h3>
+      <div class="stats-details">
+        <div class="progress-item">
+          <div class="progress-header">
+            <span>Modules Évalués</span>
+            <span>{{ progressData.modulesEvalues }}/{{ progressData.totalModules }}</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="progressData.progressPercentage"></div>
+          </div>
+        </div>
+        <div class="average-grade">
+          <span>Note Moyenne</span>
+          <span class="grade-value">{{ progressData.noteMoyenne }}/20</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logout Button -->
+  <div class="logout-section">
+    <button class="logout-btn" (click)="logout()">
+      <i class="fas fa-sign-out-alt"></i>
+      <span *ngIf="!isCollapsed || isMobile">Déconnexion</span>
+    </button>
+  </div>
+
+  <!-- Mobile Close Button (visible only on mobile) -->
+  <button *ngIf="isMobile" class="mobile-close-btn" (click)="mobileClose.emit()">
+    <i class="fas fa-times"></i>
+  </button>
+</div>

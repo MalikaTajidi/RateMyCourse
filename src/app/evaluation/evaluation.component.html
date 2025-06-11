@@ -1,0 +1,212 @@
+<!-- evaluation.component.html -->
+<div class="evaluation-container">
+  <!-- Indicateur de chargement -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Chargement des informations du module...</p>
+  </div>
+
+  <!-- En-tête avec le nom du module -->
+  <div *ngIf="!isLoading && !errorMessage" class="evaluation-header">
+    <h1>Évaluation du module: {{ moduleName }}</h1>
+    <div class="module-info">
+      <p class="module-id">Module ID: {{ moduleId }}</p>
+      <p *ngIf="moduleInfo" class="module-details">
+        <span class="module-filiere">Filière: {{ moduleInfo.filiere }}</span> | 
+        <span class="module-credits">Crédits: {{ moduleInfo.credits }}</span>
+      </p>
+      <p *ngIf="moduleInfo" class="module-description">{{ moduleInfo.description }}</p>
+    </div>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="errorMessage" class="error-message">
+    <p>{{ errorMessage }}</p>
+    <button (click)="router.navigate(['/student-area/modules'])">Retour aux modules</button>
+  </div>
+
+  <!-- Message de succès -->
+  <div *ngIf="successMessage" class="success-message">
+    <div class="success-icon">✓</div>
+    <h2>Évaluation complétée</h2>
+    <p>{{ successMessage }}</p>
+    <p class="redirect-message">Vous allez être redirigé vers la page des modules...</p>
+  </div>
+
+  <!-- Contenu de l'évaluation -->
+  <div class="evaluation-content" *ngIf="!isLoading && !successMessage && !errorMessage">
+    <!-- Barre de progression -->
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+      </div>
+      <div class="progress-info">
+        <span class="section-progress">Section {{ currentSection + 1 }}/{{ sections.length }}</span>
+        <span class="question-progress">
+          Questions répondues: {{ getAnsweredQuestionsCount() }}/{{ getTotalQuestionsCount() }}
+          ({{ getOverallProgress() | number:'1.0-0' }}%)
+        </span>
+      </div>
+    </div>
+
+    <!-- En-tête de section -->
+    <div class="section-header" *ngIf="sections && sections.length > 0">
+      <h2>{{ sections[currentSection].title }}</h2>
+      <p>{{ sections[currentSection].description }}</p>
+    </div>
+
+    <!-- Formulaire d'évaluation -->
+    <form [formGroup]="evaluationForm" (ngSubmit)="onSubmit()" *ngIf="sections && sections.length > 0">
+      <!-- Questions de la section actuelle -->
+      <div class="questions-container">
+        <div *ngFor="let question of sections[currentSection].questions" class="question-item">
+          <div class="question-content">
+            <h3>{{ question.content }} <span class="required-star">*</span></h3>
+            
+            <!-- Options de réponse (échelle de 1 à 5) -->
+            <div class="rating-options">
+              <div *ngFor="let option of question.options; let i = index" class="rating-option">
+                <label [for]="'q' + question.id + '_' + i" 
+                       [class.selected]="evaluationForm.get('question_' + question.id)?.value === option">
+                  <input
+                    type="radio"
+                    [id]="'q' + question.id + '_' + i"
+                    [value]="option"
+                    [formControlName]="'question_' + question.id"
+                  >
+                  <span class="option-text">{{ option }}</span>
+                </label>
+              </div>
+            </div>
+            
+            <!-- Message d'erreur si la question n'est pas répondue -->
+            <div *ngIf="showValidationErrors && !isQuestionAnswered(question.id)" class="validation-error">
+              Veuillez répondre à cette question.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Validation de la section -->
+      <div class="section-validation" *ngIf="showValidationErrors">
+        <p [class.validation-success]="isSectionValid(currentSection)" 
+           [class.validation-error]="!isSectionValid(currentSection)">
+          {{ getSectionValidationMessage() }}
+        </p>
+      </div>
+
+      <!-- Champ de commentaires (dernière section seulement) -->
+      <div *ngIf="currentSection === sections.length - 1" class="comments-section">
+        <h3>Commentaires additionnels (optionnel)</h3>
+        <p>Partagez vos commentaires, suggestions ou remarques concernant ce module :</p>
+        <textarea
+          formControlName="comments"
+          class="comments-textarea"
+          placeholder="Vos commentaires sur le module, suggestions d'amélioration, points positifs, etc."
+          rows="4">
+        </textarea>
+      </div>
+
+      <!-- Boutons de navigation -->
+      <div class="navigation-buttons">
+        <button
+          type="button"
+          class="btn-previous"
+          *ngIf="currentSection > 0"
+          (click)="previousSection()"
+          [disabled]="isSubmitting"
+        >
+          <span class="btn-icon">←</span>
+          <span class="btn-text">Section précédente</span>
+        </button>
+
+        <button
+          type="button"
+          class="btn-next"
+          *ngIf="currentSection < sections.length - 1"
+          (click)="nextSection()"
+          [disabled]="isSubmitting"
+        >
+          <span class="btn-text">Section suivante</span>
+          <span class="btn-icon">→</span>
+        </button>
+
+        <button
+          type="submit"
+          class="btn-submit"
+          *ngIf="currentSection === sections.length - 1 && !evaluationSubmitted"
+          [disabled]="isSubmitting || !evaluationForm.valid"
+        >
+          <span *ngIf="!isSubmitting">
+            <span class="btn-icon">✓</span>
+            <span class="btn-text">Soumettre l'évaluation</span>
+          </span>
+          <span *ngIf="isSubmitting && !isGeneratingPDF" class="loading-spinner">
+            Traitement en cours...
+          </span>
+          <span *ngIf="isGeneratingPDF" class="loading-spinner">
+            <span class="btn-icon">📄</span>
+            Génération du PDF...
+          </span>
+        </button>
+
+        <!-- Bouton pour télécharger à nouveau le PDF -->
+        <button
+          type="button"
+          class="btn-download-pdf"
+          *ngIf="evaluationSubmitted"
+          (click)="downloadPDFAgain()"
+          [disabled]="isGeneratingPDF"
+        >
+          <span *ngIf="!isGeneratingPDF">
+            <span class="btn-icon">📥</span>
+            <span class="btn-text">Télécharger le PDF</span>
+          </span>
+          <span *ngIf="isGeneratingPDF" class="loading-spinner">
+            <span class="btn-icon">📄</span>
+            Génération du PDF...
+          </span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Messages d'erreur et de succès -->
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="successMessage" class="success-message">
+      {{ successMessage }}
+    </div>
+
+    <!-- Message de confirmation après soumission -->
+    <div *ngIf="evaluationSubmitted" class="submission-confirmation">
+      <div class="confirmation-icon">✅</div>
+      <h3>Évaluation soumise avec succès !</h3>
+      <p>Votre évaluation a été enregistrée et un PDF a été généré automatiquement.</p>
+      <div class="confirmation-actions">
+        <button
+          class="btn-download-pdf-large"
+          (click)="downloadPDFAgain()"
+          [disabled]="isGeneratingPDF">
+          <span *ngIf="!isGeneratingPDF">
+            <span class="btn-icon">📥</span>
+            Télécharger le PDF à nouveau
+          </span>
+          <span *ngIf="isGeneratingPDF">
+            <span class="btn-icon">📄</span>
+            Génération en cours...
+          </span>
+        </button>
+        <button
+          class="btn-back-to-modules"
+          (click)="router.navigate(['/student-area/modules'])">
+          <span class="btn-icon">📚</span>
+          Retour aux modules
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+

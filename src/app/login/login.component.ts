@@ -1,43 +1,38 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { isPlatformBrowser, CommonModule } from '@angular/common';
-import { AuthService } from '../services/auth.service';
+import { AuthService, LoginDto } from '../auth.service';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule]
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   errorMessage: string = '';
+  successMessage: string = '';
   isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
-    private router: Router,
     private authService: AuthService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private router: Router
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required]]
     });
   }
 
   ngOnInit(): void {
-    // Vérifier si l'utilisateur est déjà connecté
-    if (isPlatformBrowser(this.platformId)) {
-      const token = localStorage.getItem('token');
-      if (token) {
-        this.router.navigate(['/dashbord']);
-      }
+    if (this.authService.isAuthenticated()) {
+      this.redirectUserBasedOnRole();
     }
-
-
   }
 
   onSubmit(): void {
@@ -45,95 +40,73 @@ export class LoginComponent implements OnInit {
       this.isLoading = true;
       this.errorMessage = '';
 
-      const credentials = {
-        email: this.loginForm.value.username,
-        password: this.loginForm.value.password
+      const loginData: LoginDto = {
+        email: this.loginForm.get('username')?.value,
+        password: this.loginForm.get('password')?.value
       };
 
-
-
-      // D'abord tester la connexion au backend
-      this.authService.testBackendConnection().subscribe({
-        next: (isBackendAvailable) => {
-          if (isBackendAvailable) {
-            console.log('Backend disponible, tentative de connexion...');
-            this.tryRealLogin(credentials);
+      this.authService.login(loginData).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (response.firstLogin) {
+            this.router.navigate(['/first-login'], {
+              state: { 
+                userId: response.userId,
+                role: response.role,
+                message: response.message
+              }
+            });
           } else {
-            console.log('Backend non disponible, utilisation de la simulation...');
-            this.trySimulatedLogin(credentials);
+            this.redirectUserBasedOnRole();
           }
         },
-        error: () => {
-          console.log('Erreur lors du test de connexion, utilisation de la simulation...');
-          this.trySimulatedLogin(credentials);
+        error: (error) => {
+          this.isLoading = false;
+          if (error.status === 400) {
+            this.errorMessage = error.error?.message || 'Email ou mot de passe incorrect';
+          } else if (error.status === 404) {
+            this.errorMessage = error.error?.message || 'Utilisateur introuvable';
+          } else {
+            this.errorMessage = 'Une erreur est survenue lors de la connexion';
+          }
         }
       });
-      
     } else {
       this.markFormGroupTouched();
     }
   }
 
-  private tryRealLogin(credentials: any): void {
-    this.authService.login(credentials).subscribe({
-      next: (response) => {
-        if (response.firstLogin) {
-          // Première connexion - afficher un message et rediriger
-          alert(`${response.message}\nVous devez changer votre mot de passe.`);
-          console.log('Première connexion détectée:', response);
-        } else if (response.success) {
-          // Connexion réussie - rediriger vers le dashboard
-          this.router.navigate(['/dashbord']);
-        } else {
-          this.errorMessage = response.message || 'Erreur de connexion';
-        }
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Erreur de connexion réelle:', error);
-        // Fallback vers la simulation
-        console.log('Fallback vers la simulation...');
-        this.trySimulatedLogin(credentials);
-      }
-    });
-  }
+  private redirectUserBasedOnRole(): void {
+    const userRole = this.authService.getUserRole();
 
-  private trySimulatedLogin(credentials: any): void {
-    this.authService.simulateLogin(credentials).subscribe({
-      next: (response) => {
-        if (response.firstLogin) {
-          // Première connexion - afficher un message
-          alert(`${response.message}\nSimulation: Vous devez changer votre mot de passe.`);
-          console.log('Première connexion simulée détectée:', response);
-          // Pour la simulation, on peut rediriger vers le dashboard quand même
-          this.router.navigate(['/dashbord']);
-        } else if (response.success) {
-          this.router.navigate(['/dashbord']);
-        } else {
-          this.errorMessage = response.message || 'Erreur de connexion';
-        }
-        this.isLoading = false;
-      },
-      error: (simError) => {
-        this.errorMessage = simError.error?.message || 'Email ou mot de passe incorrect';
-        this.isLoading = false;
-      }
-    });
+    switch (userRole) {
+      case 'Admin':
+        this.router.navigate(['/navbar/dashbordAdmin']);
+        break;
+      case 'Prof':
+        this.router.navigate(['/student-area/dashboard']);
+        break;
+      case 'Etudiant':
+        this.router.navigate(['/student-area/dashboard']);
+        break;
+      default:
+        this.router.navigate(['/student-area/dashboard']);
+        break;
+    }
   }
 
   private markFormGroupTouched(): void {
     Object.keys(this.loginForm.controls).forEach(key => {
-      const control = this.loginForm.get(key);
-      if (control) {
-        control.markAsTouched();
-      }
+      this.loginForm.get(key)?.markAsTouched();
     });
   }
 
+  resetForm(): void {
+    this.loginForm.reset();
+    this.errorMessage = '';
+  }
 
-
-  goToForgotPassword(): void {
-    // Redirection vers la page de récupération de mot de passe
-    console.log('Redirection vers la page de récupération de mot de passe');
+  onRememberMeChange(event: any): void {
+    console.log('Remember me:', event.target.checked);
   }
 }

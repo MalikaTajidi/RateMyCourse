@@ -1,87 +1,84 @@
 
-<div>
-
-
-
-  <button  (click)="toggleSidebar()" *ngIf="isSidebarHidden==false"   class="toggle-sidebar" style="background-color: #3C91E6">
+<div class="sidebar-container">
+  <!-- Bouton pour ouvrir la sidebar (visible quand la sidebar est cachée) -->
+  <button (click)="toggleSidebar()" *ngIf="isSidebarHidden" class="toggle-sidebar toggle-open">
     <i class='bx bx-menu'></i>
   </button>
 
+  <!-- Sidebar -->
+  <section class="sidebar" [ngClass]="{'hide': isSidebarHidden}">
+    <!-- En-tête de la sidebar -->
+    <div class="sidebar-header">
+      <h1 class="brand">
+        <i class="bx bxs-smile"></i>
+        <span class="text">RMC</span>
+      </h1>
+      
+      <!-- Bouton pour fermer la sidebar (visible à l'intérieur de la sidebar) -->
+      <button (click)="toggleSidebar()" class="toggle-sidebar toggle-close">
+        <i class='bx bx-x'></i>
+      </button>
+    </div>
 
-
-
-  <section class="sidebar"  [ngClass]="{'hide': isSidebarHidden}">
-
-    <h1 class="brand" style="position: relative; z-index: 1000; ">
-      <i class="bx bxs-smile"></i>
-      <span class="text">RMC</span>
-    </h1>
-
+    <!-- Menu principal -->
     <ul class="side-menu top">
-
-
-
-
-      <li *ngIf="isSidebarHidden" (click)="toggleSidebar()" >
-        <a >
-          <i class='bx bx-x' style="font-size: 40px;"></i>
-          <span class="text"></span>
-        </a>
-      </li>
-
-
-      <li [ngClass]="{'active': activeRoute === '/dashbord'}">
-        <a routerLink="/dashbord" (click)="setActive('/dashbord')">
+      <li [ngClass]="{'active': activeRoute === 'dashbordAdmin'}">
+        <a routerLink="dashbordAdmin" (click)="setActive('dashbordAdmin')">
           <i class="bx bxs-dashboard"></i>
           <span class="text">Dashboard</span>
         </a>
       </li>
 
-      <li [ngClass]="{'active': activeRoute === '/formation'}">
-        <a routerLink="/formation" (click)="setActive('/formation')">
+      <li [ngClass]="{'active': activeRoute === 'formations'}">
+        <a routerLink="formations" (click)="setActive('formations')">
           <i class="bx bxs-graduation"></i>
-          <span class="text">Formation</span>
+          <span class="text">Formations</span>
         </a>
       </li>
 
-
-
-
-
-      <li [ngClass]="{'active': activeRoute === '/profile'}">
-        <a routerLink="/profil" (click)="setActive('/profile')">
+      <li [ngClass]="{'active': activeRoute === 'profil'}">
+        <a routerLink="/profil" (click)="setActive('profil')">
           <i class="bx bxs-user"></i>
-          <span class="text">teacher</span>
+          <span class="text">Professeurs</span>
         </a>
       </li>
 
-      <li [ngClass]="{'active': activeRoute === '/student'}">
-        <a routerLink="/student" (click)="setActive('/student')">
-          <i class='bx bx-cog' ></i>
-          <span class="text">student </span>
+      <li [ngClass]="{'active': activeRoute === 'students'}">
+        <a routerLink="students" (click)="setActive('students')">
+          <i class='bx bx-user-circle'></i>
+          <span class="text">Étudiants</span>
         </a>
       </li>
 
-      <li [ngClass]="{'active': activeRoute === '/questionnaire'}">
-        <a routerLink="/question" (click)="setActive('/questionnaire')">
+      <li [ngClass]="{'active': activeRoute === 'evaluation'}">
+        <a routerLink="evaluation" (click)="setActive('evaluation')">
           <i class='bx bxs-file'></i>
-          <span class="text">form </span>
+          <span class="text">Évaluations</span>
         </a>
       </li>
-
-      <li  [ngClass]="{'active': activeRoute === '/logout'}">
-        <a   >
+    </ul>
+    
+    <!-- Menu du bas (déconnexion) -->
+    <ul class="side-menu bottom">
+      <li [ngClass]="{'active': activeRoute === '/logout'}">
+        <a (click)="logout()">
           <i class='bx bx-log-out-circle'></i>
           <span class="text">Logout</span>
         </a>
       </li>
-
     </ul>
   </section>
 
+  <!-- Overlay pour mobile (ferme la sidebar quand on clique en dehors) -->
+  <div
+    *ngIf="!isSidebarHidden && isMobile"
+    class="sidebar-overlay"
+    (click)="toggleSidebar()">
+  </div>
 
-
-
+  <!-- Contenu principal -->
+  <main class="main-content" [ngClass]="{'sidebar-hidden': isSidebarHidden}">
+    <router-outlet></router-outlet>
+  </main>
 </div>
-
 
