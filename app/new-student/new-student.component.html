@@ -1,0 +1,56 @@
+<div class="form-container">
+  <h2>{{ editMode ? 'Modifier un étudiant' : 'Ajouter un nouvel étudiant' }}</h2>
+  <form [formGroup]="StudentFormGroup">
+    <div class="form-group">
+      <label for="nom">Nom</label>
+      <input type="text" id="nom" formControlName="nom" placeholder="Entrez le nom" />
+    </div>
+
+    <div class="form-group">
+      <label for="prenom">Prénom</label>
+      <input type="text" id="prenom" formControlName="prenom" placeholder="Entrez le prénom" />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" formControlName="email" placeholder="exemple@mail.com" />
+    </div>
+
+   <div class="form-group">
+     <label for="FormationId">Formation</label>
+     <select id="FormationId" formControlName="FormationId">
+       <option value="'">-- Choisir une formation --</option>
+       <option *ngFor="let formation of formations" [value]="formation.formationId">
+         {{ formation.formationName }}
+       </option>
+       </select>
+
+   </div>
+
+
+    <div class="form-group">
+      <label for="NiveauId">Niveau</label>
+      <select id="NiveauId" formControlName="NiveauId">
+        <option value="">-- Choisir un niveau --</option>
+        <option *ngFor="let niveau of niveaux" [value]="niveau.niveauId">
+          {{ niveau.name }} <!-- Adjust this based on your Niveau model -->
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="photoUrl">Photo (URL)</label>
+      <input type="text" id="photoUrl" formControlName="photoUrl" placeholder="https://..." />
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="submit"
+        class="submit-btn"
+        (click)="editMode ? onUpdateStudent() : onSaveStudent()">
+        {{ editMode ? 'Mettre à jour' : 'Ajouter' }}
+      </button>
+      <button routerLink="/student" type="button" class="cancel-btn">Annuler</button>
+    </div>
+  </form>
+</div>

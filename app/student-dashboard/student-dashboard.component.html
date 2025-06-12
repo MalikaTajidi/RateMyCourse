@@ -1,0 +1,80 @@
+<div class="dashboard-container adaptive-container" [ngClass]="containerClasses">
+  <div class="welcome-card adaptive-card">
+    <h1>Bonjour {{ studentInfo.name }} ! <span class="wave-emoji">👋</span></h1>
+    <p>Voici un aperçu de vos performances académiques</p>
+  </div>
+
+  <div class="stats-grid adaptive-grid">
+    <div class="stat-card">
+      <div class="stat-header">
+        <h2>Note Moyenne</h2>
+        <div class="star-icon">
+          <i class="fas fa-star"></i>
+        </div>
+      </div>
+      <div class="stat-value">{{ stats.averageGrade }}/20</div>
+      <div class="stat-trend positive">+0.4 vs semestre dernier</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-header">
+        <h2>Modules Complétés</h2>
+        <div class="check-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+      </div>
+      <div class="stat-value">{{ stats.modulesCompleted }}/{{ stats.totalModules }}</div>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="stats.completionRate"></div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-header">
+        <h2>Crédits ECTS</h2>
+        <div class="medal-icon">
+          <i class="fas fa-medal"></i>
+        </div>
+      </div>
+      <div class="stat-value">30/43</div>
+      <div class="stat-subtitle">69.8% complétés</div>
+    </div>
+  </div>
+  
+  <h2 class="section-title">Modules Récents</h2>
+  
+  <div class="modules-list adaptive-grid">
+    <div *ngFor="let module of recentModules" class="module-item adaptive-card">
+      <div class="module-header">
+        <h3>{{ module.name }}</h3>
+        <span class="status-badge" [ngClass]="module.status.toLowerCase().replace(' ', '-')">
+          {{ module.status }}
+        </span>
+      </div>
+      
+      <p class="module-description">{{ module.description }}</p>
+      
+      <div class="module-footer">
+        <div class="module-grade" *ngIf="module.grade">
+          <span>{{ module.grade }}/20</span>
+        </div>
+        
+        <div class="module-actions">
+          <span *ngIf="module.evaluated" class="evaluated-badge">
+            <i class="fas fa-check"></i> Évalué
+          </span>
+          
+          <button 
+            *ngIf="!module.evaluated" 
+            class="evaluate-btn"
+            (click)="evaluateModule(module.id)">
+            Évaluer ce module
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

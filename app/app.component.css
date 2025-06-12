@@ -1,0 +1,18 @@
+.main-content {
+  margin-left: 200px;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.expanded {
+  margin-left: 0; /* Pas de marge pour les pages publiques */
+  padding: 0; /* Pas de padding pour les pages publiques */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+

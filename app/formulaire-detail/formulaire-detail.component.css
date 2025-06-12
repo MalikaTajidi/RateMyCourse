@@ -1,0 +1,107 @@
+.formulaire-detail-container {
+  padding: 20px;
+  background-color: #f1f1f1;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 0 auto;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+
+    h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .back-btn {
+      background-color: #28a745; /* Vert pour un contraste agréable */
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+
+      &:hover {
+        background-color: #218838; /* Vert foncé pour survol */
+        transform: translateY(-2px);
+      }
+
+      i {
+        margin-right: 8px;
+      }
+    }
+  }
+
+  .formulaire-detail {
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+    .info {
+      margin-bottom: 25px;
+
+      h3 {
+        font-size: 22px;
+        font-weight: 600;
+        color: #007bff; /* Bleu pour les titres */
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      p {
+        font-size: 18px;
+        color: #555;
+        line-height: 1.6;
+      }
+    }
+
+    .sections {
+      h3 {
+        font-size: 22px;
+        font-weight: 600;
+        color: #007bff; /* Bleu pour les titres des sections */
+        margin-bottom: 15px;
+      }
+
+      .section {
+        margin-bottom: 25px;
+
+        h4 {
+          font-size: 20px;
+          font-weight: 500;
+          color: #ff6600; /* Orange pour les sous-titres des sections */
+          margin-bottom: 10px;
+        }
+
+        .questions {
+          list-style-type: none;
+          padding-left: 0;
+
+          li {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+
+            &::before {
+              content: "\2022";
+              position: absolute;
+              left: 0;
+              color: #28a745; /* Vert pour les puces */
+              font-size: 18px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
